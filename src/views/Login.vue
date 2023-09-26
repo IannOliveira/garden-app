@@ -1,7 +1,7 @@
 <template>
   <VContainer>
     <VTextField v-model="email"/>
-    <VTextField v-model="password"/>
+    <VTextField type="password" v-model="password"/>
     <v-btn @click="login">Login</v-btn>
   </VContainer>
 </template>
@@ -10,6 +10,7 @@
 import {useAuth} from "@/store/auth";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
+
 const router = useRouter();
 const authStore = useAuth();
 const email = ref('');
@@ -20,4 +21,5 @@ function login(){
     router.push({name: 'dashboard'});
   });
 }
+
 </script>

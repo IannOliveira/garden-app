@@ -16,6 +16,7 @@ import { useMe } from "@/store/me";
 const authStore = useAuth();
 const router = useRouter();
 const meStore = useMe();
+
 function logout(){
   authStore.logout().then(()=> {
     router.push({name: 'login'})

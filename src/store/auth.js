@@ -9,6 +9,7 @@ export const useAuth = defineStore('auth', {
     sanctum() {
       return axios.get('sanctum/csrf-cookie');
     },
+
     login(email, password) {
       const meStore = useMe()
       return axios.post('api/login', {
@@ -17,12 +18,23 @@ export const useAuth = defineStore('auth', {
         meStore.user = r.data.data
       })
     },
+
     logout() {
       const meStore = useMe();
       return axios.post('api/logout').then(() =>{
         meStore.user = null
       })
-    }
+    },
+
+    registrar(primeiroNome, sobrenome = '', email, password){
+      return axios.post('api/registro', {
+        primeiro_nome : primeiroNome,
+        sobrenome: sobrenome,
+        email: email,
+        password: password,
+      })
+    },
+
   },
 
   getters: {

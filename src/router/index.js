@@ -17,6 +17,18 @@ const routes = [
     ],
   },
   {
+    path: '/cadastrar',
+    component: () => import('@/layouts/Login.vue'),
+    beforeEnter: redirectIfAuthenticated,
+    children: [
+      {
+        path: '',
+        name: 'cadastrar',
+        component: () => import('@/views/Registro.vue'),
+      },
+    ],
+  },
+  {
     path: '/',
     component: () => import('@/layouts/Dashboard.vue'),
     beforeEnter: auth,
