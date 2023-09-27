@@ -12,19 +12,19 @@
               <v-row class="d-flex mb-3">
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">Primeiro nome</v-label>
-                  <v-text-field variant="outlined" hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="primeiroNome" variant="outlined" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">Sobrenome</v-label>
-                  <v-text-field variant="outlined" hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="sobrenome" variant="outlined" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">E-mail</v-label>
-                  <v-text-field variant="outlined" type="email" hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="email" variant="outlined" type="email" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">Senha</v-label>
-                  <v-text-field variant="outlined" type="password"  hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="password" variant="outlined" type="password"  hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12" >
                   <v-btn color="primary" size="large" block   flat @click="registrar">Cadastrar</v-btn>

@@ -14,7 +14,7 @@
                 class="d-flex mb-3">
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">E-mail</v-label>
-                  <v-text-field variant="outlined" type="email" hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="email" variant="outlined" type="email" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12" >
                   <v-btn @click="forgotPassword" color="primary" size="large" block   flat>Solicitar Token</v-btn>
@@ -26,11 +26,11 @@
                 class="d-flex mb-3">
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">Token</v-label>
-                  <v-text-field variant="outlined" type="text" hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="token" variant="outlined" type="text" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">Nova Senha</v-label>
-                  <v-text-field variant="outlined" type="text" hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="password" variant="outlined" type="password" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12" >
                   <v-btn @click="resetPassword" color="primary" size="large" block   flat>Redefinir senha</v-btn>

@@ -22,7 +22,7 @@
                  class="text-success text-center"
             >
               Email verificado! <br/>
-              Obrigado, {{ state.data.data.first_name }} por verificar seu email.
+              Obrigado, {{ state.data.data.primeiro_nome }} por verificar seu email.
             </div>
 
           </v-card-item>

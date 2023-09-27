@@ -2,6 +2,8 @@
 // Light Buttons
 //
 
+@use '../../styles/settings';
+
 .v-btn {
   &.bg-lightprimary {
     &:hover,

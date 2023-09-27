@@ -1,8 +1,5 @@
-/**
- * main.js
- *
- * Bootstraps Vuetify and other plugins then mounts the App`
- */
+import { loadFonts } from "@/plugins/webfontloader";
+loadFonts()
 
 import './axios'
 

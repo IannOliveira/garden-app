@@ -11,12 +11,12 @@
 
               <v-row class="d-flex mb-3">
                 <v-col cols="12">
-                  <v-label class="font-weight-bold mb-1">Email</v-label>
-                  <v-text-field variant="outlined" hide-details color="primary"></v-text-field>
+                  <v-label class="font-weight-bold mb-1">E-mail</v-label>
+                  <v-text-field v-model="email" variant="outlined" hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-label class="font-weight-bold mb-1">Senha</v-label>
-                  <v-text-field variant="outlined" type="password"  hide-details color="primary"></v-text-field>
+                  <v-text-field v-model="password" variant="outlined" type="password"  hide-details color="primary"></v-text-field>
                 </v-col>
                 <v-col cols="12" class="pt-0">
                   <div class="d-flex flex-wrap align-center ml-n2">
