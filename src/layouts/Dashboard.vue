@@ -1,18 +1,20 @@
 <template>
   <v-app>
-    <v-app-bar flat>
-      <v-app-bar-title>
-        <v-icon icon="mdi-circle-slice-6" />
+    <!-- <VerticalSidebarVue />
+    <VerticalHeaderVue  /> -->
+    <Header />
 
-        Dashboard
-      </v-app-bar-title>
-    </v-app-bar>
 
     <v-main>
-      <router-view />
+      <v-container fluid class="page-wrapper">
+        <div class="maxWidth">
+          <RouterView />
+        </div>
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script setup>
+import Header from "@/components/Shell/Header.vue";
 </script>
