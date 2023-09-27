@@ -19,7 +19,6 @@ const routes = [
   {
     path: '/cadastrar',
     component: () => import('@/layouts/Login.vue'),
-    beforeEnter: redirectIfAuthenticated,
     children: [
       {
         path: '',
@@ -31,12 +30,22 @@ const routes = [
   {
     path: '/verificar-email',
     component: () => import('@/layouts/Login.vue'),
-    beforeEnter: redirectIfAuthenticated,
     children: [
       {
         path: '',
         name: 'verificarEmail',
         component: () => import('@/views/VerificarEmail.vue'),
+      },
+    ],
+  },
+  {
+    path: '/esqueci-senha',
+    component: () => import('@/layouts/Login.vue'),
+    children: [
+      {
+        path: '',
+        name: 'esqueciSenha',
+        component: () => import('@/views/EsqueciSenha.vue'),
       },
     ],
   },

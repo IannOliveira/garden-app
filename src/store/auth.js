@@ -37,7 +37,19 @@ export const useAuth = defineStore('auth', {
 
     verificarEmail(token) {
       return axios.post('api/verificar-email',{
-        token
+        token,
+      })
+    },
+
+    esqueciSenha(email){
+      return axios.post('api/esqueci-senha', {
+        email
+      })
+    },
+
+    resetarSenha(token, password){
+      return axios.post('api/resetar-senha', {
+        token, password
       })
     },
 

@@ -12,22 +12,21 @@
 
 import {ref} from "vue";
 import {useAuth} from "@/store/auth";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const primeiroNome = ref('');
 const sobrenome = ref('');
 const email = ref('');
 const password = ref('');
 
 function registrar() {
+
   const authStore = useAuth();
   authStore.registrar(primeiroNome.value, sobrenome.value, email.value, password.value).then((r) => {
     if (r) {
-      primeiroNome.value = '',
-      sobrenome.value = '',
-      email.value = '',
-      password.value = ''
+      router.push({name: 'dashboard'});
     }
-
   });
 
 }
