@@ -1,8 +1,9 @@
 <template>
-  <VContainer>
-    Dashboard
 
-  </VContainer>
+
+  dashboard
+
+
 </template>
 
 <script setup>

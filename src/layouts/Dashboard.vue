@@ -2,7 +2,7 @@
   <v-app>
     <!-- <VerticalSidebarVue />
     <VerticalHeaderVue  /> -->
-    <Header />
+    <Header/>
 
 
     <v-main>

@@ -28,7 +28,11 @@ export default createVuetify({
     VTooltip: {
       // set v-tooltip default location to top
       location: 'top'
+    },
+    VNavigationDrawer: {
+      class: 'leftSidebar',
     }
+
   }
 
 });

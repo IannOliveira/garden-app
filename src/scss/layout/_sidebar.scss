@@ -7,6 +7,9 @@
   .logo {
     padding-left: 7px;
   }
+  .custom-switch {
+    display: flex;
+  }
 
   .mini-icon {
     display: none;
@@ -52,7 +55,7 @@
     }
 
     .v-list-item__prepend {
-      margin-inline-end: 13px;
+      margin-inline-end: 7px;
     }
 
     .v-list-item__append {

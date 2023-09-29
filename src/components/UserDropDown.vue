@@ -1,16 +1,33 @@
-<template>
 
+<template>
   <v-menu :close-on-content-click="false">
-    <template v-slot:activator="{ props }">
-      <v-btn class="profileBtn custom-hover-primary" variant="text" v-bind="props" icon>
-        <v-avatar size="35">
-          <img src="@/assets/images/users/avatar-1.jpg" height="35" alt="user" />
-        </v-avatar>
-      </v-btn>
+    <template v-slot:activator="{ props }" >
+
+      <div>
+        <v-row>
+            <v-switch
+              inset
+              color="info"
+              v-model="darkMode"
+              @change="toggleTheme()"
+              class="custom-switch mt-4"
+              :label="`${darkMode ? 'Escuro' : 'Claro'}!`"
+            />
+
+          <v-col class="mt-3">
+            <v-btn class="profileBtn custom-hover-primary" variant="text" v-bind="props" icon>
+              <v-avatar size="35">
+                <img src="@/assets/images/users/avatar-1.jpg" height="35" alt="user"/>
+              </v-avatar>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </div>
+
     </template>
     <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
       <v-list class="py-0" lines="one" density="compact">
-        <v-list-item value="item1" active-color="primary" >
+        <v-list-item value="item1" active-color="primary">
           <template v-slot:prepend>
             <v-icon icon="mdi-account-outline"/>
           </template>
@@ -19,7 +36,7 @@
         <v-list-item value="item2" active-color="primary">
           <template v-slot:prepend>
           </template>
-          <v-list-item-title  class="pl-4 text-body-1">My Account</v-list-item-title>
+          <v-list-item-title class="pl-4 text-body-1">My Account</v-list-item-title>
         </v-list-item>
         <v-list-item value="item3" active-color="primary">
           <template v-slot:prepend>
@@ -37,13 +54,32 @@
 
 
 <script setup>
-import { useAuth } from "@/store/auth";
-import { useRouter } from "vue-router";
+import {useAuth} from "@/store/auth";
+import {useRouter} from "vue-router";
+
 const authStore = useAuth();
 const router = useRouter();
-function logout(){
-  authStore.logout().then(()=> {
+import {useTheme} from "vuetify";
+import {ref} from "vue";
+
+const theme = useTheme();
+const darkMode = ref(false);
+
+const toggleTheme = () => {
+  theme.global.name.value = darkMode.value ? "dark" : "light";
+};
+
+function logout() {
+  authStore.logout().then(() => {
     router.push({name: 'login'})
   })
 }
 </script>
+
+<style>
+
+.custom-switch {
+  transform: scale(0.6);
+}
+
+</style>
