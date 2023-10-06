@@ -49,18 +49,19 @@ const routes = [
       },
     ],
   },
+
   {
     path: '/',
     component: () => import('@/layouts/Dashboard.vue'),
     beforeEnter: auth,
     children: [
-      {
-        path: '',
-        name: 'dashboard',
-        component: () => import('@/views/Dashboard.vue'),
-      },
+      { path: '', name: 'dashboard', component: () => import('@/views/Dashboard.vue') },
+      { path: '/cliente', name: 'listaClientes', component: () => import('@/views/Dashboard.vue') },
+      { path: '/cliente', name: 'editarCliente', component: () => import('@/views/Dashboard.vue') },
+      { path: '/cliente', name: 'excluirCliente', component: () => import('@/views/Dashboard.vue') },
     ],
   },
+
 ];
 
 const router = createRouter({
