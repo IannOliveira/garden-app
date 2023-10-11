@@ -51,14 +51,22 @@ const routes = [
   },
 
   {
+    path: '/cliente',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/cliente', name: 'cadastrarCliente', component: () => import('@/views/Cliente.vue') },
+      { path: '/cliente', name: 'listaClientes', component: () => import('@/views/Cliente.vue') },
+      { path: '/cliente', name: 'editarCliente', component: () => import('@/views/Cliente.vue') },
+      { path: '/cliente', name: 'excluirCliente', component: () => import('@/views/Cliente.vue') },
+    ],
+  },
+  {
     path: '/',
     component: () => import('@/layouts/Dashboard.vue'),
     beforeEnter: auth,
     children: [
-      { path: '', name: 'dashboard', component: () => import('@/views/Dashboard.vue') },
-      { path: '/cliente', name: 'listaClientes', component: () => import('@/views/Dashboard.vue') },
-      { path: '/cliente', name: 'editarCliente', component: () => import('@/views/Dashboard.vue') },
-      { path: '/cliente', name: 'excluirCliente', component: () => import('@/views/Dashboard.vue') },
+      { path: '/', name: 'dashboard', component: () => import('@/views/Dashboard.vue') },
     ],
   },
 

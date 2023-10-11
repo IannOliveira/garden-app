@@ -48,7 +48,7 @@ const errorMessage = ref(null);
 const authStore = useAuth();
 
 const schema = yup.object({
-  email: yup.string().required().email().label('E-mail')
+  email: yup.string().required('E-mail é um campo obrigatório.').email('Insira um e-mail válido.')
 });
 
 const { handleSubmit, errors, isSubmitting } = useForm({

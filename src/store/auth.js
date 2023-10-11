@@ -50,7 +50,6 @@ export const useAuth = defineStore('auth', {
       return axios.get('api/cliente');
     },
     cadastrarCliente(formValues) {
-      console.log(formValues)
       return axios.post('api/cliente', formValues)
     },
     editarCliente(id, formValues) {

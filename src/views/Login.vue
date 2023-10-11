@@ -98,8 +98,8 @@ const router = useRouter();
 const authStore = useAuth();
 
 const schema = yup.object({
-  email: yup.string().required().email().label('E-mail'),
-  password: yup.string().required().label('Senha'),
+  email: yup.string().required('E-mail é um campo obrigatório.').email('Insira um e-mail válido.'),
+  password: yup.string().required('Senha é um campo obrigatório.'),
 });
 
 const { handleSubmit, errors, isSubmitting } = useForm({

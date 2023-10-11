@@ -25,13 +25,15 @@
       </div>
 
     </template>
+
     <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
       <v-list class="py-0" lines="one" density="compact">
         <v-list-item value="item1" active-color="primary">
           <template v-slot:prepend>
             <v-icon icon="mdi-account-outline"/>
+            <v-list-item-title class="pl-4 text-body-1">My Profile</v-list-item-title>
           </template>
-          <v-list-item-title class="pl-4 text-body-1">My Profile</v-list-item-title>
+
         </v-list-item>
         <v-list-item value="item2" active-color="primary">
           <template v-slot:prepend>

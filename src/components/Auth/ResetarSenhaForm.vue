@@ -58,8 +58,8 @@ const errorMessage = ref(null);
 const authStore = useAuth();
 
 const schema = yup.object({
-  token: yup.string().required().label('Token'),
-  password: yup.string().required().min(8).label('Senha')
+  token: yup.string().required('Token é um campo obrigatório.'),
+  password: yup.string().required('Nova senha é um campo obrigatório.').min(8, 'A senha deve conter pelo menos 8 caracteres.')
 });
 
 const {handleSubmit, errors, isSubmitting} = useForm({
