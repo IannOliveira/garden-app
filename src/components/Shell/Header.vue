@@ -2,16 +2,16 @@
 
   <v-navigation-drawer left elevation="0" app class="leftSi debar" v-model="sidebarDrawer">
     <!---Logo part -->
-    <div class="pa-5 border-b">
+    <div class="pa-4">
       <Logo/>
     </div>
 
 
-    <v-scroll-y-reverse-transition>
+    <v-scroll-y-reverse-transition  >
       <div>
 
         <!-- <perfect-scrollbar class="scrollnavbar"> -->
-        <v-list class="pa-1">
+        <v-list class="pa-1" >
 
           <v-list-subheader color="darkText" class="smallCap text-uppercase text-subtitle-2 mt-5 font-weight-bold">Menu
           </v-list-subheader>
@@ -36,7 +36,7 @@
             </RouterLink>
           </v-list-group>
         </v-list>
-        <div class="pa-4">
+        <div class="pa-4" >
           <!-- <ExtraBox />-->
         </div>
         <!-- </perfect-scrollbar> -->
@@ -45,22 +45,23 @@
 
   </v-navigation-drawer>
 
+  <v-app-bar elevation="0" height="65">
 
-  <v-app-bar elevation="0" height="40">
     <div class="d-flex align-center justify-space-between w-100 border-right border-b">
       <div>
-        <v-app-bar-nav-icon size="small" class="ms-md-3 ms-sm-5 ms-3 text-muted"
+        <v-app-bar-nav-icon class="ms-md-3 ms-sm-5 ms-3"
                             @click="sidebarDrawer = !sidebarDrawer">
         </v-app-bar-nav-icon>
 
         <!-- Notification
         <NotificationDD />-->
       </div>
-      <div class>
+      <div>
         <UserDropDown/>
       </div>
     </div>
   </v-app-bar>
+
 </template>
 
 <script setup>

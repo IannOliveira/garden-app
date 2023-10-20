@@ -16,9 +16,12 @@ import pinia from "@/store";
 import {useMe} from "@/store/me";
 import '@/scss/style.scss';
 import VueTheMask from 'vue-the-mask'
+import Vue3EasyDataTable from 'vue3-easy-data-table';
+import 'vue3-easy-data-table/dist/style.css';
 
 const app = createApp(App)
 
+app.component('EasyDataTable', Vue3EasyDataTable);
 app.use(VueTheMask)
 app.use(pinia)
 const meStore = useMe();

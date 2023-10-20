@@ -1,9 +1,9 @@
 
 <template>
-  <v-menu :close-on-content-click="false">
+  <v-menu :close-on-content-click="false" >
     <template v-slot:activator="{ props }" >
 
-      <div>
+      <div >
         <v-row>
             <v-switch
               inset
@@ -26,7 +26,7 @@
 
     </template>
 
-    <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
+    <v-sheet rounded="md" width="200" elevation="10" class="mt-2" >
       <v-list class="py-0" lines="one" density="compact">
         <v-list-item value="item1" active-color="primary">
           <template v-slot:prepend>

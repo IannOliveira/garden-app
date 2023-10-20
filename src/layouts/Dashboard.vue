@@ -6,7 +6,7 @@
 
 
     <v-main>
-      <v-container fluid class="page-wrapper">
+      <v-container fluid class="page-wrapper" >
         <div class="maxWidth">
           <RouterView />
         </div>

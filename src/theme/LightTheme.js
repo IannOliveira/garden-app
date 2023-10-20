@@ -3,7 +3,7 @@ export const PurpleTheme = {
   dark: false,
   variables: {
     'border-color': '#eeeeee',
-    'carousel-control-size': 10
+    'carousel-control-size': 10,
   },
   colors: {
     primary: '#5D87FF',
