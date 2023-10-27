@@ -29,12 +29,40 @@
               </v-list-item>
             </template>
             <RouterLink to="/cliente" class="router-link-custom">
-            <v-list-item value="teste" active-color="primary" >
+            <v-list-item value="cliente" active-color="primary" >
                 <v-icon icon="mdi-content-save"/>
                 &nbsp;&nbsp;&nbsp;Cadastro
             </v-list-item>
             </RouterLink>
           </v-list-group>
+
+
+          <v-list-group>
+            <template #activator="{ props }">
+              <v-list-item
+                prepend-icon="mdi-account-circle"
+                v-bind="props"
+                rounded
+                class="mb-1"
+                active-color="primary"
+              >
+                Contas/Fornecedor
+              </v-list-item>
+            </template>
+            <RouterLink to="/contas" class="router-link-custom">
+              <v-list-item value="contas" active-color="primary" >
+                <v-icon icon="mdi-content-save"/>
+                &nbsp;&nbsp;&nbsp;Contas
+              </v-list-item>
+            </RouterLink>
+            <RouterLink to="/fornecedor" class="router-link-custom">
+              <v-list-item value="fornecedor" active-color="primary">
+                <v-icon icon="mdi-content-save"/>
+                &nbsp;&nbsp;&nbsp;Fornecedor
+              </v-list-item>
+            </RouterLink>
+          </v-list-group>
+
         </v-list>
         <div class="pa-4" >
           <!-- <ExtraBox />-->

@@ -7,7 +7,6 @@
       </v-btn>
     </v-app-bar>
 
-
     <div class="v-col-md-12 v-col-12">
       <v-card class="border mb-4">
         <v-card-item class="py-4 px-6">
@@ -22,7 +21,6 @@
             v-model="isDialogOpen"
             width="1000px"
           >
-
             <v-card style="height: 480px;">
               <v-card-title class="pa-4 bg-secondary">
                     <span class="title text-white">{{
@@ -188,9 +186,7 @@
 
               </v-card-text>
             </v-card>
-
           </v-dialog>
-
         </v-card-item>
 
         <div class="v-col-md-3 v-col-12">
@@ -210,7 +206,7 @@
           :items="clientes"
           :search="search"
           :sort-by="[{key: 'nome', order: 'asc'}]"
-          class="elevation-1"
+          class="elevation-1 border-b"
           @reset="handleReset"
         >
 
@@ -413,7 +409,6 @@ function abrirModal() {
   selectedId.value = '';
   modo.value = 'adicao'
   handleReset()
-
 }
 
 const itemsPerPage = ref(10);

@@ -58,6 +58,24 @@ export const useAuth = defineStore('auth', {
     excluirCliente(id) {
       return axios.delete('api/cliente/' + id);
     },
+    listaFornecedor(){
+      return axios.get('api/fornecedor')
+    },
+    cadastrarFornecedor(formValues){
+      return axios.post('api/fornecedor', formValues);
+    },
+    editarFornecedor(id, formValues){
+      return axios.put('api/fornecedor/' +id, formValues)
+    },
+    excluirFornecedor(id){
+      return axios.delete('api/fornecedor/' +id);
+    },
+    listaContas(){
+      return axios.get('api/contas');
+    },
+    cadastrarContas(formValues){
+      return axios.post('api/contas', formValues);
+    },
 
   },
 

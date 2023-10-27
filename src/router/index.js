@@ -62,6 +62,26 @@ const routes = [
     ],
   },
   {
+    path: '/contas',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/contas', name: 'listaContas', component: () => import('@/views/Contas.vue') },
+      { path: '/contas', name: 'cadastrarContas', component: () => import('@/views/Contas.vue') },
+    ],
+  },
+  {
+    path: '/fornecedor',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/fornecedor', name: 'cadastrarFornecedor', component: () => import('@/views/Fornecedor.vue') },
+      { path: '/fornecedor', name: 'listaFornecedor', component: () => import('@/views/Fornecedor.vue') },
+      { path: '/fornecedor', name: 'editarFornecedor', component: () => import('@/views/Fornecedor.vue') },
+      { path: '/fornecedor', name: 'excluirCliente', component: () => import('@/views/Fornecedor.vue') },
+    ],
+  },
+  {
     path: '/',
     component: () => import('@/layouts/Dashboard.vue'),
     beforeEnter: auth,
