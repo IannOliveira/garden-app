@@ -23,11 +23,18 @@
             width="1000px"
           >
             <v-card style="height: 525px;">
-              <v-card-title class="pa-4 bg-secondary">
+              <div v-if="modo === 'pagamento'">
+              <v-card-title class="pa-4 bg-success">
+                    <span class="title text-white">
+                        Pagar Conta
+                       </span></v-card-title>
+              </div>
+              <div v-else>
+                <v-card-title class="pa-4 bg-secondary">
                     <span class="title text-white">{{
                         modo === 'adicao' ? 'Adicionar Conta' : 'Editar Conta'
                       }} </span></v-card-title>
-
+              </div>
               <v-card-text>
 
                 <v-alert
@@ -41,6 +48,17 @@
                 <form @submit="submit" @reset="handleReset">
                   <v-row>
                     <v-col cols="8">
+                      <div v-if="modo === 'pagamento'">
+                        <v-select
+                          v-model="fornecedor_id"
+                          label="Fornecedor"
+                          readonly
+                          :items="fornecedor"
+                          item-title="nome"
+                          item-value="id"
+                        />
+                      </div>
+                      <div v-else>
                       <v-select
                         v-model="fornecedor_id"
                         label="Fornecedor"
@@ -50,49 +68,78 @@
                         :hide-details="!errors.fornecedor_id"
                         :error-messages="errors.fornecedor_id"
                       />
+                      </div>
                     </v-col>
                     <v-col cols="4">
+                      <div v-if="modo === 'pagamento'">
                       <v-text-field
                         v-model="numero_documento"
                         label="Numero do Documento"
-                        :hide-details="!errors.numero_documento"
-                        :error-messages="errors.numero_documento">
-                      </v-text-field>
+                        readonly
+                      />
+                      </div>
+                      <div v-else>
+                        <v-text-field
+                          v-model="numero_documento"
+                          label="Numero do Documento"
+                        />
+                        </div>
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field
-                        v-model="nota_fiscal"
-                        label="Nota Fiscal"
-                        :hide-details="!errors.nota_fiscal"
-                        :error-messages="errors.nota_fiscal">
-                      </v-text-field>
+                      <div v-if="modo === 'pagamento'">
+                        <v-text-field
+                          v-model="nota_fiscal"
+                          label="Nota Fiscal"
+                          readonly
+                        />
+                        </div>
+                      <div v-else>
+                        <v-text-field
+                          v-model="nota_fiscal"
+                          label="Nota Fiscal"
+                          :hide-details="!errors.nota_fiscal"
+                          :error-messages="errors.nota_fiscal"/>
+                      </div>
                     </v-col>
                     <v-col cols="3">
-                      <v-text-field
-                        v-model="valor"
-                        label="Valor"
-                        :hide-details="!errors.valor"
-                        :error-messages="errors.valor"
-                        prefix="R$: ">
-
-                      </v-text-field>
+                      <div v-if="modo === 'pagamento'">
+                        <v-text-field
+                          v-model="valor"
+                          label="Valor"
+                          v-money="moneyOptions"
+                          readonly
+                          prefix="R$: "
+                        />
+                       </div>
+                      <div v-else>
+                        <v-text-field
+                          v-model="valor"
+                          label="Valor"
+                          v-money="moneyOptions"
+                          :hide-details="!errors.valor"
+                          :error-messages="errors.valor"
+                          prefix="R$: "
+                           />
+                      </div>
                     </v-col>
                     <v-col cols="3">
-                      <div v-if="modo === 'adicao'">
+                      <div v-if="modo === 'adicao' || modo === 'edicao'">
                       <v-text-field
                         v-model="valor_pago"
+                        disabled
                         label="Valor Pago"
-                        disabled>
-                      </v-text-field>
+
+                         />
                       </div>
-                      <div v-else-if="modo === 'pagamento'">
+                      <div v-else>
                         <v-text-field
                           v-model="valor_pago"
                           label="Valor Pago"
+                          v-money="moneyOptions"
                           :hide-details="!errors.valor_pago"
                           :error-messages="errors.valor_pago"
-                          prefix="R$: ">
-                        </v-text-field>
+
+                          />
                       </div>
                     </v-col>
                     <v-col cols="4">
@@ -100,58 +147,82 @@
                       <v-text-field
                         v-model="data_lancamento"
                         label="Data do Lançamento"
-                        disabled
-                        type="date">
-                      </v-text-field>
+                        disabled />
                       </div>
-                      <div v-else-if="modo === 'pagamento'">
+                      <div v-else-if="modo === 'pagamento' || modo === 'edicao'">
                         <v-text-field
                           v-model="data_lancamento"
                           label="Data do Lançamento"
+                          readonly
                           type="date"
                           :hide-details="!errors.data_lancamento"
-                          :error-messages="errors.data_lancamento">
-                        </v-text-field>
+                          :error-messages="errors.data_lancamento"/>
                       </div>
                     </v-col>
                     <v-col cols="4">
+                      <div v-if="modo === 'pagamento'">
+                      <v-text-field
+                        v-model="data_vencimento"
+                        label="Data do Vencimento"
+                        readonly
+                        type="date" />
+                      </div>
+                    <div v-else>
                       <v-text-field
                         v-model="data_vencimento"
                         label="Data do Vencimento"
                         type="date"
                         :hide-details="!errors.data_vencimento"
-                        :error-messages="errors.data_vencimento">
-                      </v-text-field>
+                        :error-messages="errors.data_vencimento" />
+                    </div>
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'adicao'">
-                      <v-text-field
-                        v-model="data_pagamento"
-                        label="Data do Pagamento"
-                        type="date"
-                        disabled>
-                      </v-text-field>
-                      </div>
-                      <div v-else-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento'">
                         <v-text-field
                           v-model="data_pagamento"
                           label="Data do Pagamento"
                           type="date"
                           :hide-details="!errors.data_pagamento"
-                          :error-messages="errors.data_pagamento">
-                        </v-text-field>
+                          :error-messages="errors.data_pagamento" />
                       </div>
+                      <div v-else>
+                      <v-text-field
+                        v-model="data_pagamento"
+                        disabled
+                        label="Data do Pagamento"
+                      />
+                      </div>
+
                     </v-col>
                     <v-col cols="4">
+                      <div v-if="modo === 'pagamento'">
                       <v-select
                         v-model="tipo_pagamento"
                         label="Tipo de Pagamento"
+                        readonly
                         :items="['DINHEIRO', 'CARTÃO', 'PIX']"
-                        :hide-details="!errors.tipo_pagamento"
-                        :error-messages="errors.tipo_pagamento"
                       />
+                      </div>
+                      <div v-else>
+                        <v-select
+                          v-model="tipo_pagamento"
+                          label="Tipo de Pagamento"
+                          :items="['DINHEIRO', 'CARTÃO', 'PIX']"
+                          :hide-details="!errors.tipo_pagamento"
+                          :error-messages="errors.tipo_pagamento"
+                        />
+                      </div>
                     </v-col>
                     <v-col cols="4">
+                      <div v-if="modo === 'pagamento'">
+                      <v-select
+                        v-model="conta_movimento"
+                        label="Conta Movimento"
+                        readonly
+                        :items="['CAIXA', 'CRÉDITO', 'DÉBITO']"
+                      />
+                      </div>
+                      <div v-else>
                       <v-select
                         v-model="conta_movimento"
                         label="Conta Movimento"
@@ -159,15 +230,26 @@
                         :hide-details="!errors.conta_movimento"
                         :error-messages="errors.conta_movimento"
                       />
+                      </div>
                     </v-col>
                     <v-col cols="4">
+                      <div v-if="modo === 'pagamento'">
                       <v-select
                         v-model="plano_contas"
                         label="Plano de Contas"
+                        readonly
                         :items="['Vale Transporte', 'Comida', 'Mecanico']"
-                        :hide-details="!errors.plano_contas"
-                        :error-messages="errors.plano_contas"
                       />
+                      </div>
+                      <div v-else>
+                        <v-select
+                          v-model="plano_contas"
+                          label="Plano de Contas"
+                          :items="['Vale Transporte', 'Comida', 'Mecanico']"
+                          :hide-details="!errors.plano_contas"
+                          :error-messages="errors.plano_contas"
+                        />
+                      </div>
                     </v-col>
 
                   </v-row>
@@ -177,12 +259,23 @@
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
+                        <div v-if="modo === 'pagamento'">
                         <v-btn type="submit"
-                               class="bg-secondary"
+                               class="bg-success"
                                flat
+                               prepend-icon="mdi-currency-usd"
                                :loading="isSubmitting"
-                               :disabled="isSubmitting" variant="tonal">Salvar
+                               :disabled="isSubmitting" variant="tonal">Pagar
                         </v-btn>
+                        </div>
+                        <div v-else>
+                          <v-btn type="submit"
+                                 class="bg-secondary"
+                                 flat
+                                 :loading="isSubmitting"
+                                 :disabled="isSubmitting" variant="tonal">Salvar
+                          </v-btn>
+                        </div>
                       </v-card-actions>
                     </v-col>
 
@@ -213,22 +306,42 @@
           :headers="headers"
           :items="contas"
           :search="search"
-          :sort-by="[{key: 'nome', order: 'asc'}]"
           class="elevation-1"
           @reset="handleReset"
         >
 
-          <template v-slot:item.actions="{ item: cliente }">
+          <template v-slot:item.data_lancamento="{ item: conta }">
+            {{ formatDate(conta.data_lancamento) }}
+          </template>
+          <template v-slot:item.data_vencimento="{ item: conta }">
+            {{ formatDate(conta.data_vencimento) }}
+          </template>
+          <template v-slot:item.status="{ value }">
+            <v-chip :color="getColor(value)" >
+              {{ value == 1 ? 'ABERTO' : value == 2 ? 'ATRASO' : value == 3 ? 'PAGO' :  value }}
+            </v-chip>
+          </template>
+          <template v-slot:item.actions="{ item: conta }">
             <div class="align-center">
-              <v-btn flat rounded>
+              <v-btn flat rounded >
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-primary"
+                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                     fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                </svg>
+
+              </v-btn>
+              <v-btn flat rounded v-if="conta.status != '3'" >
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-secondary"
                      width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                      fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path>
                   <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"></line>
                 </svg>
               </v-btn>
-              <v-btn flat rounded >
+              <v-btn flat rounded @click="abrirExcluir(conta)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash text-error"
                      width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                      fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -239,10 +352,52 @@
                   <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
                 </svg>
               </v-btn>
+              <v-btn flat rounded @click="pagarContas(conta)" v-if="conta.status != '3'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin-filled text-success"
+                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                     fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                  <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"></path>
+                  <path d="M12 7v10"></path>
+                </svg>
+              </v-btn>
             </div>
           </template>
 
         </v-data-table>
+
+        <v-dialog
+          v-model="isDialogExcluir"
+          width="400px"
+        >
+          <v-card style="height: 227px;">
+            <v-card-title class="pa-3 bg-primary">Excluir Conta</v-card-title>
+
+            <v-card-text>
+              <v-row>
+                <v-col>
+                  Deseja realmente excluir esta conta <b>"{{ selectNome }}"</b>?
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="text-center">
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn flat class="bg-error" @click="isDialogExcluir = false">Não</v-btn>
+                    <v-btn @click.stop.prevent="excluirConta(conta)"
+                           class="bg-success"
+                           flat
+                           :loading="isSubmitting"
+                           :disabled="isSubmitting" variant="tonal">Sim
+                    </v-btn>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
 
       </v-card>
 
@@ -261,9 +416,11 @@ import router from "@/router";
 import messages from "@/utils/messages";
 
 const authStore = useAuth();
+const isDialogExcluir = ref(false);
 const errorMessage = ref(null);
 const isDialogOpen = ref(false);
 const modo = ref('adicao');
+
 
 const schema = yup.object({
   fornecedor_id: yup.string().required('Fornecedor é um campo obrigatório.'),
@@ -291,18 +448,28 @@ const {value: data_pagamento} = useField('data_pagamento');
 const {value: tipo_pagamento} = useField('tipo_pagamento');
 const {value: conta_movimento} = useField('conta_movimento');
 const {value: plano_contas} = useField('plano_contas');
-const {value: status} = useField('status');
 
 const headers = ref([
-  {title: "Nome", align: 'start', key: "fornecedor_nome"},
-  {title: "Telefone", align: 'center', key: "valor"},
-  {title: "Ações", align: 'center', value: "actions"},
+  {title: "Nome do Fornecedor", align: 'start', key: "fornecedor_nome"},
+  {title: "Data do Lançamento", align: 'center', key: "data_lancamento"},
+  {title: "Data do Vencimento", align: 'center', key: "data_vencimento"},
+  {title: "Status", align: 'center', key: "status"},
+  {title: "Ações", align: 'center', value: "actions"}
 ]);
 
-const search = ref('');
+const moneyOptions = ref({
+  suffix: '',
+  thousands: '.',
+  decimal: ',',
+  precision: 2,
+  allowBlank: true,
+  masked: true,
+});
 
+const search = ref('');
 const contas = ref([]);
 const fornecedor = ref([]);
+const selectNome = ref('');
 
 onMounted(async () => {
   try {
@@ -317,6 +484,7 @@ onMounted(async () => {
 
 const submit = handleSubmit((value) => {
   errorMessage.value = null
+  console.log(selectedId)
   if ((selectedId.value == null || selectedId.value == '') && modo.value === 'adicao') {
     return authStore.cadastrarContas(value)
       .then(() => {
@@ -325,22 +493,82 @@ const submit = handleSubmit((value) => {
       }).catch((e) => {
         errorMessage.value = messages[e.response.data.error]
       });
-  } else {
+  } else if (modo.value === 'edicao') {
     return authStore.editarCliente(selectedId.value, value).then(() => {
       isDialogOpen.value = false
       router.go();
     }).catch((e) => {
       errorMessage.value = messages[e.response.data.error]
     })
+  } else {
+      return authStore.pagarContas(selectedId.value, value). then(() => {
+        isDialogOpen.value = false
+        router.go();
+      }). catch((e) => {
+        errorMessage.value = messages[e.response.data.error]
+      });
   }
 })
 
+function abrirExcluir(user) {
+  isDialogExcluir.value = true
+  selectNome.value = user.fornecedor_nome
+  selectedId.value = user.id
+
+}
+
+function excluirConta() {
+  authStore.excluirConta(selectedId.value).then(() => {
+    isDialogExcluir.value = false
+    router.go();
+  });
+}
+
+function pagarContas(user) {
+  selectedId.value = user.id;
+  isDialogOpen.value = true;
+  modo.value = 'pagamento';
+  errorMessage.value = null;
+
+  if(modo.value === 'pagamento' ) {
+    fornecedor_id.value = user.fornecedor_id
+    numero_documento.value = user.numero_documento,
+      nota_fiscal.value = user.nota_fiscal,
+      valor.value = user.valor,
+      valor_pago.value = user.valor_pago,
+      data_lancamento.value = user.data_lancamento,
+      data_vencimento.value = user.data_vencimento,
+      data_pagamento.value = user.data_pagamento,
+      tipo_pagamento.value = user.tipo_pagamento,
+      conta_movimento.value = user.conta_movimento,
+      plano_contas.value = user.plano_contas
+  }
+}
+
 function abrirModal() {
+  console.log(modo.value)
+  console.log(selectedId.value)
+
+  errorMessage.value = null;
   isDialogOpen.value = true
   selectedId.value = '';
   modo.value = 'adicao'
   handleReset()
 }
+
+const getColor = (status) => {
+  if (status == 1) return 'primary'
+  else if (status == 3) return 'success'
+  else return 'warning';
+}
+
+const formatDate = (value) => {
+  if (value) {
+    const date = new Date(value);
+    return date.toLocaleDateString('pt-BR');
+  }
+  return '';
+};
 
 const itemsPerPage = ref(10);
 

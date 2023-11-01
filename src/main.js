@@ -18,6 +18,7 @@ import '@/scss/style.scss';
 import VueTheMask from 'vue-the-mask'
 import Vue3EasyDataTable from 'vue3-easy-data-table';
 import 'vue3-easy-data-table/dist/style.css';
+import Money from 'v-money';
 
 const app = createApp(App)
 
@@ -30,5 +31,6 @@ meStore.getMe()
   .finally( () => {
     app.use(vuetify)
     app.use(router)
+    app.use(Money)
     app.mount('#app')
   })

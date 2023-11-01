@@ -76,6 +76,12 @@ export const useAuth = defineStore('auth', {
     cadastrarContas(formValues){
       return axios.post('api/contas', formValues);
     },
+    pagarContas(id, formValues) {
+      return axios.put('api/contas/' +id, formValues);
+    },
+    excluirConta(id){
+      return axios.delete('api/contas/' +id);
+    }
 
   },
 
