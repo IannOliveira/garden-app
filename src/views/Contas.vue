@@ -114,11 +114,10 @@
                       <div v-else>
                         <v-text-field
                           v-model="valor"
-                          label="Valor"
                           v-money="moneyOptions"
+                          label="Valor"
                           :hide-details="!errors.valor"
                           :error-messages="errors.valor"
-                          prefix="R$: "
                            />
                       </div>
                     </v-col>
@@ -126,19 +125,18 @@
                       <div v-if="modo === 'adicao' || modo === 'edicao'">
                       <v-text-field
                         v-model="valor_pago"
+                        v-money="moneyOptions"
                         disabled
                         label="Valor Pago"
-
                          />
                       </div>
                       <div v-else>
                         <v-text-field
                           v-model="valor_pago"
-                          label="Valor Pago"
                           v-money="moneyOptions"
+                          label="Valor Pago"
                           :hide-details="!errors.valor_pago"
                           :error-messages="errors.valor_pago"
-
                           />
                       </div>
                     </v-col>
@@ -421,7 +419,6 @@ const errorMessage = ref(null);
 const isDialogOpen = ref(false);
 const modo = ref('adicao');
 
-
 const schema = yup.object({
   fornecedor_id: yup.string().required('Fornecedor é um campo obrigatório.'),
   valor: yup.string().required('Valor é um campo obrigatório.'),
@@ -459,10 +456,8 @@ const headers = ref([
 
 const moneyOptions = ref({
   suffix: '',
-  thousands: '.',
-  decimal: ',',
   precision: 2,
-  allowBlank: true,
+  allowBlank: false,
   masked: true,
 });
 
@@ -569,6 +564,8 @@ const formatDate = (value) => {
   }
   return '';
 };
+
+
 
 const itemsPerPage = ref(10);
 
