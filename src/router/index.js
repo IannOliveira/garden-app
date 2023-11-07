@@ -68,6 +68,9 @@ const routes = [
     children: [
       { path: '/contas', name: 'listaContas', component: () => import('@/views/Contas.vue') },
       { path: '/contas', name: 'cadastrarContas', component: () => import('@/views/Contas.vue') },
+      { path: '/contas', name: 'pagarContas', component: () => import('@/views/Contas.vue') },
+      { path: '/contas/update', name: 'editarConta', component: () => import('@/views/Contas.vue') },
+      { path: '/contas', name: 'excluirConta', component: () => import('@/views/Contas.vue') },
     ],
   },
   {

@@ -7,7 +7,6 @@
       </v-btn>
     </v-app-bar>
 
-
     <div class="v-col-md-12 v-col-12">
       <v-card class="border mb-4">
         <v-card-item class="py-4 px-6">
@@ -158,7 +157,7 @@
                       </div>
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                       <v-text-field
                         v-model="data_vencimento"
                         label="Data do Vencimento"
@@ -184,11 +183,11 @@
                           :error-messages="errors.data_pagamento" />
                       </div>
                       <div v-else>
-                      <v-text-field
-                        v-model="data_pagamento"
-                        disabled
-                        label="Data do Pagamento"
-                      />
+                        <v-text-field
+                          v-model="data_pagamento"
+                          disabled
+                          label="Data do Pagamento"
+                        />
                       </div>
 
                     </v-col>
@@ -285,7 +284,6 @@
 
           </v-dialog>
 
-
         </v-card-item>
 
         <div class="v-col-md-3 v-col-12">
@@ -309,10 +307,10 @@
         >
 
           <template v-slot:item.data_lancamento="{ item: conta }">
-            {{ formatDate(conta.data_lancamento) }}
+            {{ formataData(conta.data_lancamento) }}
           </template>
           <template v-slot:item.data_vencimento="{ item: conta }">
-            {{ formatDate(conta.data_vencimento) }}
+            {{ formataData(conta.data_vencimento) }}
           </template>
           <template v-slot:item.status="{ value }">
             <v-chip :color="getColor(value)" >
@@ -331,7 +329,7 @@
                 </svg>
 
               </v-btn>
-              <v-btn flat rounded v-if="conta.status != '3'" >
+              <v-btn flat rounded @click="editarContas(conta)" v-if="conta.status != '3'" >
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-secondary"
                      width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                      fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -489,7 +487,7 @@ const submit = handleSubmit((value) => {
         errorMessage.value = messages[e.response.data.error]
       });
   } else if (modo.value === 'edicao') {
-    return authStore.editarCliente(selectedId.value, value).then(() => {
+    return authStore.editarConta(selectedId.value, value).then(() => {
       isDialogOpen.value = false
       router.go();
     }).catch((e) => {
@@ -540,6 +538,27 @@ function pagarContas(user) {
   }
 }
 
+function editarContas(user) {
+  selectedId.value = user.id;
+  isDialogOpen.value = true;
+  modo.value = 'edicao';
+  errorMessage.value = null;
+
+  if(modo.value === 'edicao' ) {
+    fornecedor_id.value = user.fornecedor_id
+    numero_documento.value = user.numero_documento,
+      nota_fiscal.value = user.nota_fiscal,
+      valor.value = user.valor,
+      valor_pago.value = user.valor_pago,
+      data_lancamento.value = user.data_lancamento,
+      data_vencimento.value = user.data_vencimento,
+      data_pagamento.value = user.data_pagamento,
+      tipo_pagamento.value = user.tipo_pagamento,
+      conta_movimento.value = user.conta_movimento,
+      plano_contas.value = user.plano_contas
+  }
+}
+
 function abrirModal() {
   console.log(modo.value)
   console.log(selectedId.value)
@@ -557,14 +576,18 @@ const getColor = (status) => {
   else return 'warning';
 }
 
-const formatDate = (value) => {
+const formataData = ref((value) => {
   if (value) {
     const date = new Date(value);
-    return date.toLocaleDateString('pt-BR');
+
+    date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+
+    const dateFormatted = date.toLocaleDateString('pt-BR');
+
+    return dateFormatted;
   }
   return '';
-};
-
+});
 
 
 const itemsPerPage = ref(10);
