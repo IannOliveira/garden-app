@@ -1,7 +1,6 @@
 import {defineStore} from "pinia";
 import {useMe} from "@/store/me";
 import axios from "axios";
-import {useFormValues} from "vee-validate";
 
 export const useAuth = defineStore('auth', {
   state: () => ({}),
@@ -67,9 +66,6 @@ export const useAuth = defineStore('auth', {
     },
     editarFornecedor(id, formValues){
       return axios.put('api/fornecedor/' +id, formValues)
-    },
-    excluirFornecedor(id){
-      return axios.delete('api/fornecedor/' +id);
     },
     listaContas(){
       return axios.get('api/contas');

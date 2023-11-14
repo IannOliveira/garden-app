@@ -38,60 +38,132 @@
 
               <form @submit="submit" @reset="handleReset">
                 <v-row>
+
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="nome"
                       label="Nome"
                       :hide-details="!errors.nome"
                       :error-messages="errors.nome">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="nome"
+                        label="Nome"
+                        readonly
+                        :hide-details="!errors.nome">
+                      </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="cpf_cnpj"
                       label="CPF/CNPJ"
                       :hide-details="!errors.cpf_cnpj">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="cpf_cnpj"
+                        label="CPF/CNPJ"
+                        readonly
+                        :hide-details="!errors.cpf_cnpj">
+                      </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="4">
-                    <v-text-field
-                      v-model="inscricao_estadual"
-                      label="Inscrição Estadual"
-                      :hide-details="!errors.inscricao_estadual">
-                    </v-text-field>
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
+                      <v-text-field
+                        v-model="inscricao_estadual"
+                        label="Inscrição Estadual"
+                        :hide-details="!errors.inscricao_estadual">
+                      </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="inscricao_estadual"
+                        label="Inscrição Estadual"
+                        readonly
+                        :hide-details="!errors.inscricao_estadual">
+                      </v-text-field>
+                    </div>
                   </v-col>
-
                   <v-col cols="5">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="razao_social"
                       label="Razão Social"
                       :hide-details="!errors.razao_social">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="razao_social"
+                        readonly
+                        label="Razão Social"
+                        :hide-details="!errors.razao_social">
+                      </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="5">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="endereco"
                       label="Endereço"
                       :hide-details="!errors.endereco"
                       :error-messages="errors.endereco">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="endereco"
+                        label="Endereço"
+                        readonly
+                        :hide-details="!errors.endereco">
+                      </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="2">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="numero"
                       label="N°"
                       :hide-details="!errors.numero">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                    <v-text-field
+                      v-model="numero"
+                      label="N°"
+                      readonly
+                      :hide-details="!errors.numero">
+                    </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="cep"
                       label="CEP"
                       v-mask="'#####-###'"
                       :hide-details="!errors.cep">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="cep"
+                        label="CEP"
+                        readonly
+                        v-mask="'#####-###'"
+                        :hide-details="!errors.cep">
+                      </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-select
                       v-model="cidade"
                       label="Cidade"
@@ -99,8 +171,18 @@
                       :hide-details="!errors.cidade"
                       :error-messages="errors.cidade"
                     />
+                    </div>
+                    <div v-else>
+                      <v-select
+                        v-model="cidade"
+                        label="Cidade"
+                        readonly
+                        :hide-details="!errors.cidade"
+                      />
+                    </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-select
                       v-model="estado"
                       label="Estado"
@@ -108,22 +190,53 @@
                       :hide-details="!errors.estado"
                       :error-messages="errors.estado"
                     />
+                    </div>
+                    <div v-else>
+                      <v-select
+                        v-model="estado"
+                        label="Estado"
+                        readonly
+                        :hide-details="!errors.estado"
+                      />
+                    </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="bairro"
                       label="Bairro"
                       :hide-details="!errors.bairro"
                       :error-messages="errors.bairro">
                     </v-text-field>
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-model="bairro"
+                        label="Bairro"
+                        readonly
+                        :hide-details="!errors.bairro">
+                      </v-text-field>
+                    </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="modo === 'adicao' || modo === 'edicao'">
                     <v-text-field
                       v-model="telefone"
                       label="Celular"
                       v-mask="'(##)#####-####'"
                       :hide-details="!errors.telefone">
                     </v-text-field>
+                      </div>
+                        <div v-else>
+                          <v-text-field
+                            v-model="telefone"
+                            label="Celular"
+                            v-mask="'(##)#####-####'"
+                            readonly
+                            :hide-details="!errors.telefone">
+                          </v-text-field>
+                        </div>
+
                   </v-col>
                 </v-row>
 
@@ -131,13 +244,15 @@
                   <v-col class="text-right">
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
+                      <v-btn variant="tonal" flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
+                      <div v-if="modo === 'adicao' || modo === 'edicao'">
                       <v-btn type="submit"
                              class="bg-secondary"
                              flat
                              :loading="isSubmitting"
                              :disabled="isSubmitting" variant="tonal">Salvar
                       </v-btn>
+                      </div>
                     </v-card-actions>
                   </v-col>
 
@@ -173,60 +288,27 @@
 
           <template v-slot:item.actions="{ item: fornecedor }">
             <div class="align-center">
-              <v-btn flat rounded @click="editarFornecedor(fornecedor)">
+              <v-btn flat rounded @click="visualizarFornecedor(fornecedor)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-primary"
+                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                     fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                </svg>
+              </v-btn>
+              <v-btn flat rounded @click="editarFornecedor(fornecedor)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-secondary"
                      width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                      fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path>
                   <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"></line>
                 </svg>
               </v-btn>
-              <v-btn flat rounded @click="abrirExcluir(fornecedor)">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash text-error"
-                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                     fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="4" y1="7" x2="20" y2="7"></line>
-                  <line x1="10" y1="11" x2="10" y2="17"></line>
-                  <line x1="14" y1="11" x2="14" y2="17"></line>
-                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
-                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
-                </svg>
-              </v-btn>
             </div>
           </template>
 
         </VDataTable>
-
-        <v-dialog
-          v-model="isDialogExcluir"
-          width="400px"
-        >
-          <v-card style="height: 227px;">
-            <v-card-title class="pa-3 bg-primary">Excluir Fornecedor</v-card-title>
-
-            <v-card-text>
-              <v-row>
-                <v-col>
-                  Deseja realmente excluir este fornecedor <b>"{{ selectNome }}"</b>?
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="text-center">
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn flat class="bg-error" @click="isDialogExcluir = false">Não</v-btn>
-                    <v-btn @click.stop.prevent="excluirFornecedor(fornecedor)"
-                           class="bg-success"
-                           flat
-                           :loading="isSubmitting"
-                           :disabled="isSubmitting" variant="tonal">Sim
-                    </v-btn>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
 
       </v-card>
     </div>
@@ -244,7 +326,6 @@ import * as yup from "yup";
 
 const authStore = useAuth();
 const errorMessage = ref(null);
-const isDialogExcluir = ref(false);
 const isDialogOpen = ref(false);
 const modo = ref('adicao');
 
@@ -261,7 +342,6 @@ const {handleSubmit, errors, isSubmitting, handleReset} = useForm({
 });
 
 const selectedId = ref('');
-const selectNome = ref('');
 
 const {value: cpf_cnpj} = useField('cpf_cnpj');
 const {value: inscricao_estadual} = useField('inscricao_estadual');
@@ -283,18 +363,6 @@ const headers = ref([
 
 const search = ref('');
 
-function abrirExcluir(user) {
-  isDialogExcluir.value = true
-  selectNome.value = user.nome
-  selectedId.value = user.id
-}
-
-function excluirFornecedor() {
-  authStore.excluirFornecedor(selectedId.value).then(() => {
-    isDialogExcluir.value = false
-    router.go();
-  });
-}
 
 const submit = handleSubmit((value) => {
   console.log('aqui')
@@ -316,6 +384,27 @@ const submit = handleSubmit((value) => {
     })
   }
 })
+
+function visualizarFornecedor(user) {
+  selectedId.value = user.id;
+  isDialogOpen.value = true;
+  modo.value = 'visualizar';
+  errorMessage.value = null
+
+  if (modo.value === 'visualizar') {
+    nome.value = user.nome,
+      cpf_cnpj.value = user.cpf_cnpj,
+      inscricao_estadual.value = user.inscricao_estadual,
+      razao_social.value = user.razao_social,
+      endereco.value = user.endereco,
+      numero.value = user.numero,
+      cep.value = user.cep,
+      cidade.value = user.cidade,
+      estado.value = user.estado,
+      bairro.value = user.bairro,
+      telefone.value = user.telefone
+  }
+}
 
 function editarFornecedor(user) {
   selectedId.value = user.id;

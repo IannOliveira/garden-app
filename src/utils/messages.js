@@ -10,5 +10,6 @@ export default {
   ValorPagoIgualException: 'Ops! Valor Pago tem que ser igual ao Valor.',
   DataPagamentoException: 'Insira a Data de Pagamento.',
   DataPagamentoMenorLancamentoException: 'A Data de Pagamento não pode ser menor que a Data de Lançamento.',
-  ValorIgualAZeroException: 'O Valor da conta não pode ser zero ou vazio.'
+  ValorIgualAZeroException: 'O Valor da conta não pode ser zero ou vazio.',
+  DataVencimentoMenorQueDataDeLancamentoException: 'A Data do Vencimento não pode ser menor que a Data do Lançamento.'
 }

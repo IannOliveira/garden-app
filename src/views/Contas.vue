@@ -21,12 +21,16 @@
             v-model="isDialogOpen"
             width="1000px"
           >
-            <v-card style="height: 525px;">
+            <v-card style="height: 570px;">
               <div v-if="modo === 'pagamento'">
               <v-card-title class="pa-4 bg-success">
                     <span class="title text-white">
                         Pagar Conta
                        </span></v-card-title>
+              </div>
+              <div v-else-if="modo === 'visualizar'">
+                <v-card-title class="pa-4 bg-secondary">
+                    <span class="title text-white"> Visualizar Conta </span></v-card-title>
               </div>
               <div v-else>
                 <v-card-title class="pa-4 bg-secondary">
@@ -34,6 +38,7 @@
                         modo === 'adicao' ? 'Adicionar Conta' : 'Editar Conta'
                       }} </span></v-card-title>
               </div>
+
               <v-card-text>
 
                 <v-alert
@@ -47,7 +52,7 @@
                 <form @submit="submit" @reset="handleReset">
                   <v-row>
                     <v-col cols="8">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                         <v-select
                           v-model="fornecedor_id"
                           label="Fornecedor"
@@ -70,7 +75,7 @@
                       </div>
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                       <v-text-field
                         v-model="numero_documento"
                         label="Numero do Documento"
@@ -85,7 +90,7 @@
                         </div>
                     </v-col>
                     <v-col cols="6">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || 'visualizar'">
                         <v-text-field
                           v-model="nota_fiscal"
                           label="Nota Fiscal"
@@ -101,7 +106,7 @@
                       </div>
                     </v-col>
                     <v-col cols="3">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                         <v-text-field
                           v-model="valor"
                           label="Valor"
@@ -117,6 +122,7 @@
                           label="Valor"
                           :hide-details="!errors.valor"
                           :error-messages="errors.valor"
+                          prefix="R$: "
                            />
                       </div>
                     </v-col>
@@ -127,7 +133,17 @@
                         v-money="moneyOptions"
                         disabled
                         label="Valor Pago"
+                        prefix="R$: "
                          />
+                      </div>
+                      <div v-else-if="modo === 'visualizar'">
+                        <v-text-field
+                          v-model="valor_pago"
+                          v-money="moneyOptions"
+                          label="Valor Pago"
+                          readonly
+                          prefix="R$: "
+                        />
                       </div>
                       <div v-else>
                         <v-text-field
@@ -136,17 +152,19 @@
                           label="Valor Pago"
                           :hide-details="!errors.valor_pago"
                           :error-messages="errors.valor_pago"
+                          prefix="R$: "
                           />
                       </div>
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'adicao'">
+                      <div v-if="modo === 'adicao' || modo === 'edicao'">
                       <v-text-field
                         v-model="data_lancamento"
+                        type="date"
                         label="Data do Lançamento"
                         disabled />
                       </div>
-                      <div v-else-if="modo === 'pagamento' || modo === 'edicao'">
+                      <div v-else>
                         <v-text-field
                           v-model="data_lancamento"
                           label="Data do Lançamento"
@@ -182,6 +200,14 @@
                           :hide-details="!errors.data_pagamento"
                           :error-messages="errors.data_pagamento" />
                       </div>
+                      <div v-else-if="modo === 'visualizar'">
+                        <v-text-field
+                          v-model="data_pagamento"
+                          type="date"
+                          readonly
+                          label="Data do Pagamento"
+                        />
+                      </div>
                       <div v-else>
                         <v-text-field
                           v-model="data_pagamento"
@@ -192,7 +218,7 @@
 
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                       <v-select
                         v-model="tipo_pagamento"
                         label="Tipo de Pagamento"
@@ -211,7 +237,7 @@
                       </div>
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                       <v-select
                         v-model="conta_movimento"
                         label="Conta Movimento"
@@ -230,7 +256,7 @@
                       </div>
                     </v-col>
                     <v-col cols="4">
-                      <div v-if="modo === 'pagamento'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                       <v-select
                         v-model="plano_contas"
                         label="Plano de Contas"
@@ -255,7 +281,7 @@
                     <v-col class="text-right">
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
+                          <v-btn variant="tonal" flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
                         <div v-if="modo === 'pagamento'">
                         <v-btn type="submit"
                                class="bg-success"
@@ -265,7 +291,7 @@
                                :disabled="isSubmitting" variant="tonal">Pagar
                         </v-btn>
                         </div>
-                        <div v-else>
+                        <div v-else-if="modo === 'adicao' || modo === 'edicao'">
                           <v-btn type="submit"
                                  class="bg-secondary"
                                  flat
@@ -319,7 +345,7 @@
           </template>
           <template v-slot:item.actions="{ item: conta }">
             <div class="align-center">
-              <v-btn flat rounded >
+              <v-btn flat rounded @click="visualizarContas(conta)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-primary"
                      width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                      fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -327,7 +353,6 @@
                   <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                   <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
                 </svg>
-
               </v-btn>
               <v-btn flat rounded @click="editarContas(conta)" v-if="conta.status != '3'" >
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-secondary"
@@ -394,7 +419,6 @@
           </v-card>
         </v-dialog>
 
-
       </v-card>
 
     </div>
@@ -455,6 +479,8 @@ const headers = ref([
 const moneyOptions = ref({
   suffix: '',
   precision: 2,
+  decimal: '.',
+  thousands: '',
   allowBlank: false,
   masked: true,
 });
@@ -475,9 +501,9 @@ onMounted(async () => {
   }
 })
 
+
 const submit = handleSubmit((value) => {
   errorMessage.value = null
-  console.log(selectedId)
   if ((selectedId.value == null || selectedId.value == '') && modo.value === 'adicao') {
     return authStore.cadastrarContas(value)
       .then(() => {
@@ -507,7 +533,6 @@ function abrirExcluir(user) {
   isDialogExcluir.value = true
   selectNome.value = user.fornecedor_nome
   selectedId.value = user.id
-
 }
 
 function excluirConta() {
@@ -536,6 +561,7 @@ function pagarContas(user) {
       conta_movimento.value = user.conta_movimento,
       plano_contas.value = user.plano_contas
   }
+
 }
 
 function editarContas(user) {
@@ -545,6 +571,27 @@ function editarContas(user) {
   errorMessage.value = null;
 
   if(modo.value === 'edicao' ) {
+    fornecedor_id.value = user.fornecedor_id
+    numero_documento.value = user.numero_documento,
+      nota_fiscal.value = user.nota_fiscal,
+      valor.value = user.valor,
+      valor_pago.value = user.valor_pago,
+      data_lancamento.value = user.data_lancamento,
+      data_vencimento.value = user.data_vencimento,
+      data_pagamento.value = user.data_pagamento,
+      tipo_pagamento.value = user.tipo_pagamento,
+      conta_movimento.value = user.conta_movimento,
+      plano_contas.value = user.plano_contas
+  }
+}
+
+function visualizarContas(user) {
+  selectedId.value = user.id;
+  isDialogOpen.value = true;
+  modo.value = 'visualizar';
+  errorMessage.value = null;
+
+  if(modo.value === 'visualizar' ) {
     fornecedor_id.value = user.fornecedor_id
     numero_documento.value = user.numero_documento,
       nota_fiscal.value = user.nota_fiscal,
@@ -588,7 +635,6 @@ const formataData = ref((value) => {
   }
   return '';
 });
-
 
 const itemsPerPage = ref(10);
 
