@@ -89,7 +89,9 @@ const routes = [
     component: () => import('@/layouts/Dashboard.vue'),
     beforeEnter: auth,
     children: [
-      { path: '/', name: 'dashboard', component: () => import('@/views/Dashboard.vue') },
+      { path: '/', name: 'listaProdutos', component: () => import('@/views/Dashboard.vue') },
+      { path: '/', name: 'cadastrarProduto', component: () => import('@/views/Dashboard.vue') },
+      { path: '/', name: 'editarProduto', component: () => import('@/views/Dashboard.vue') }
     ],
   },
 

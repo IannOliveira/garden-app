@@ -62,6 +62,25 @@
               </v-list-item>
             </RouterLink>
           </v-list-group>
+          <v-list-group>
+            <template #activator="{ props }">
+              <v-list-item
+                prepend-icon="mdi-account-circle"
+                v-bind="props"
+                rounded
+                class="mb-1"
+                active-color="primary"
+              >
+                Estoque
+              </v-list-item>
+            </template>
+          <RouterLink to="/" class="router-link-custom">
+            <v-list-item value="dashboard" active-color="primary">
+              <v-icon icon="mdi-content-save"/>
+              &nbsp;&nbsp;&nbsp;Produtos
+            </v-list-item>
+          </RouterLink>
+          </v-list-group>
 
         </v-list>
         <div class="pa-4" >

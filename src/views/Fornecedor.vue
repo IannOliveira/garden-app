@@ -22,10 +22,17 @@
             width="1000px"
           >
             <v-card style="height: 480px;">
+              <div v-if="modo === 'visualizar'">
+                <v-card-title class="pa-4 bg-secondary">
+                  <span class="title text-white"> Visualizar Fornecedor </span></v-card-title>
+              </div>
+              <div v-else>
               <v-card-title class="pa-4 bg-secondary">
                     <span class="title text-white">{{
                         modo === 'adicao' ? 'Adicionar Fornecedor' : 'Editar Fornecedor'
-                      }} </span></v-card-title>
+                      }} </span>
+              </v-card-title>
+              </div>
             <v-card-text>
 
               <v-alert
@@ -244,7 +251,7 @@
                   <v-col class="text-right">
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn variant="tonal" flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
+                      <v-btn flat variant="tonal" class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
                       <div v-if="modo === 'adicao' || modo === 'edicao'">
                       <v-btn type="submit"
                              class="bg-secondary"
@@ -281,6 +288,8 @@
           :headers="headers"
           :items="fornecedores"
           :search="search"
+          :loading="loading"
+          loading-text="Carregando dados..."
           :sort-by="[{key: 'nome', order: 'asc'}]"
           class="elevation-1 text-subtitle-1 font-weight-semibold"
           @reset="handleReset"
@@ -363,9 +372,10 @@ const headers = ref([
 
 const search = ref('');
 
+const loading = ref(true);
+
 
 const submit = handleSubmit((value) => {
-  console.log('aqui')
   errorMessage.value = null
   if ((selectedId.value == null || selectedId.value == '') && modo.value === 'adicao') {
     return authStore.cadastrarFornecedor(value)
@@ -433,6 +443,7 @@ onMounted(async () => {
   try {
     const response = await authStore.listaFornecedor();
     fornecedores.value = response.data.data;
+    loading.value = false;
   } catch (error) {
     console.error('Erro ao buscar a lista de clientes:', error);
   }

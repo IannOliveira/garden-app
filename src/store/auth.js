@@ -82,6 +82,16 @@ export const useAuth = defineStore('auth', {
     editarConta(id, formValues){
       return axios.put('api/contas/update/' +id, formValues)
     },
+    listaProdutos(){
+      return axios.get('api/produtos');
+    },
+    cadastrarProduto(formValues){
+      return axios.post('api/produtos', formValues);
+    },
+    editarProduto(id, formValues){
+      return axios.put('api/produtos/' +id, formValues)
+    },
+
 
   },
 

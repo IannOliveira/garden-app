@@ -11,5 +11,7 @@ export default {
   DataPagamentoException: 'Insira a Data de Pagamento.',
   DataPagamentoMenorLancamentoException: 'A Data de Pagamento não pode ser menor que a Data de Lançamento.',
   ValorIgualAZeroException: 'O Valor da conta não pode ser zero ou vazio.',
-  DataVencimentoMenorQueDataDeLancamentoException: 'A Data do Vencimento não pode ser menor que a Data do Lançamento.'
+  DataVencimentoMenorQueDataDeLancamentoException: 'A Data do Vencimento não pode ser menor que a Data do Lançamento.',
+  PrecoProdutoException: 'O campo Preço não pode ser zero ou vazio.',
+  PrecoVendaProdutoException: 'O Preço de Venda não pode ser zero ou vazio.'
 }

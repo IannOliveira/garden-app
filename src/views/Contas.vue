@@ -90,7 +90,7 @@
                         </div>
                     </v-col>
                     <v-col cols="6">
-                      <div v-if="modo === 'pagamento' || 'visualizar'">
+                      <div v-if="modo === 'pagamento' || modo === 'visualizar'">
                         <v-text-field
                           v-model="nota_fiscal"
                           label="Nota Fiscal"
@@ -282,6 +282,7 @@
                       <v-card-actions>
                         <v-spacer></v-spacer>
                           <v-btn variant="tonal" flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
+
                         <div v-if="modo === 'pagamento'">
                         <v-btn type="submit"
                                class="bg-success"
@@ -299,6 +300,7 @@
                                  :disabled="isSubmitting" variant="tonal">Salvar
                           </v-btn>
                         </div>
+
                       </v-card-actions>
                     </v-col>
 
@@ -327,6 +329,8 @@
           v-model:items-per-page="itemsPerPage"
           :headers="headers"
           :items="contas"
+          :loading="loading"
+          loading-text="Carregando dados..."
           :search="search"
           class="elevation-1"
           @reset="handleReset"
@@ -440,6 +444,7 @@ const isDialogExcluir = ref(false);
 const errorMessage = ref(null);
 const isDialogOpen = ref(false);
 const modo = ref('adicao');
+const loading = ref(true);
 
 const schema = yup.object({
   fornecedor_id: yup.string().required('Fornecedor é um campo obrigatório.'),
@@ -496,6 +501,7 @@ onMounted(async () => {
     const responsefornecedores = await authStore.listaFornecedor();
     contas.value = responseContas.data.data;
     fornecedor.value = responsefornecedores.data.data;
+    loading.value = false;
 } catch (error) {
     console.error('Erro ao buscar a lista de clientes:', error);
   }
@@ -607,9 +613,6 @@ function visualizarContas(user) {
 }
 
 function abrirModal() {
-  console.log(modo.value)
-  console.log(selectedId.value)
-
   errorMessage.value = null;
   isDialogOpen.value = true
   selectedId.value = '';
