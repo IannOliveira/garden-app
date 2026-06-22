@@ -11,7 +11,6 @@ import {
 
 import { VDatePicker } from "vuetify/labs/components";
 
-
 export default createVuetify({
   components: {
     VDataTable,
@@ -29,21 +28,18 @@ export default createVuetify({
   },
 
   defaults: {
-    VBtn: {},
-    VCard: {
-      rounded: 'md'
+    VBtn: {
+      style: 'letter-spacing: 0; font-weight: 600;',
     },
-    VTextField: {
-      rounded: 'lg'
+    VCard: {
+      rounded: 'lg',
     },
     VTooltip: {
-      // set v-tooltip default location to top
-      location: 'top'
+      location: 'top',
     },
     VNavigationDrawer: {
       class: 'leftSidebar',
-    }
-
+    },
   }
 
 });

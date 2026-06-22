@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import axios from "axios";
+import api from "@/services/apiService";
 
 export const useMe = defineStore('me', {
   state: () => ({
@@ -8,8 +8,9 @@ export const useMe = defineStore('me', {
 
   actions: {
     async getMe() {
-      this.user = await axios.get('api/me').then(r => r.data.data);
+      this.user = await api.get('api/me').then(r => r.data.data);
     }
   }
 
 })
+

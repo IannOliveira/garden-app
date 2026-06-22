@@ -1,601 +1,427 @@
 <template>
-  <v-row>
-    <v-app-bar elevation="0" height="50" color="#455a64">
-      <v-btn @click="abrirModal('adicao')" aria-haspopup="dialog"
-             aria-expanded="false" class="ml-auto">
-        <v-icon class="mdi-account-multiple-plus mdi v-icon--size-default mr-2 text-left" aria-hidden="true"/>
+  <div>
+    <!-- Page Header -->
+    <div class="d-flex align-center justify-space-between mb-5">
+      <div>
+        <h1 class="text-h5 font-weight-bold">Clientes</h1>
+        <p class="text-body-2 text-medium-emphasis mt-1">
+          {{ clientes.length }} cliente{{ clientes.length !== 1 ? 's' : '' }} cadastrado{{ clientes.length !== 1 ? 's' : '' }}
+        </p>
+      </div>
+      <v-btn
+        color="primary"
+        variant="flat"
+        prepend-icon="mdi-plus"
+        rounded="lg"
+        @click="abrirModal('adicao')"
+      >
+        Novo Cliente
       </v-btn>
-    </v-app-bar>
-
-    <div class="v-col-md-12 v-col-12">
-      <v-card class="border mb-4">
-        <v-card-item class="py-4 px-6">
-
-          <div class="d-sm-flex align-center justify-space-between">
-            <v-card-title class="text-h5">Clientes Cadastrados</v-card-title>
-          </div>
-
-          <v-divider aria-orientation="horizontal" role="separator"/>
-
-          <v-dialog
-            v-model="isDialogOpen"
-            width="1000px"
-          >
-            <v-card style="height: 480px;">
-                <v-card-title class="pa-4 bg-secondary">
-                  <div v-if="modo === 'visualizar'">
-                    <span class="title text-white"> Visualizar Fornecedor </span>
-                  </div>
-                  <div v-else>
-                    <span class="title text-white">{{
-                        modo === 'adicao' ? 'Adicionar Cliente' : 'Editar Cliente'
-                      }} </span>
-                  </div>
-                </v-card-title>
-                <v-card-text>
-                  <v-alert
-                    v-if="errorMessage"
-                    type="error"
-                    :text="errorMessage"
-                    :icon="false"
-                    class="mb-5"
-                  />
-
-                  <form @submit="submit" @reset="handleReset">
-                    <v-row>
-
-                      <v-col cols="4">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="nome"
-                            label="Nome"
-                            :hide-details="!errors.nome"
-                            :error-messages="errors.nome"
-                          />
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="nome"
-                            label="Nome"
-                            :hide-details="!errors.nome"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-
-                      <v-col cols="4">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="cpf"
-                            v-mask="'###.###.###-##'"
-                            label="CPF"
-                            :hide-details="!errors.cpf"
-                            :error-messages="errors.cpf"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="cpf"
-                            v-mask="'###.###.###-##'"
-                            label="CPF"
-                            :hide-details="!errors.cpf"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-                      <v-col cols="4">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="rg"
-                            v-mask="'#######'"
-                            label="RG"
-                            :hide-details="!errors.rg"
-                            :error-messages="errors.rg"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="rg"
-                            v-mask="'#######'"
-                            label="RG"
-                            :hide-details="!errors.rg"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="4">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="endereco"
-                            label="Endereço"
-                            :hide-details="!errors.endereco"
-                            :error-messages="errors.endereco"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="endereco"
-                            label="Endereço"
-                            :hide-details="!errors.endereco"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="2">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="numero_casa"
-                            label="N°"
-                            :hide-details="!errors.numero_casa"
-                            :error-messages="errors.numero_casa"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="numero_casa"
-                            label="N°"
-                            :hide-details="!errors.numero_casa"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col class="v-col-3">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="bairro"
-                            label="Bairro"
-                            :hide-details="!errors.bairro"
-                            :error-messages="errors.bairro"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="bairro"
-                            label="Bairro"
-                            :hide-details="!errors.bairro"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="3">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="cep"
-                            label="CEP"
-                            v-mask="'#####-###'"
-                            :hide-details="!errors.cep"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="cep"
-                            label="CEP"
-                            v-mask="'#####-###'"
-                            :hide-details="!errors.cep"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="4">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="referencia"
-                            label="Referencia"
-                            :hide-details="!errors.referencia"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="referencia"
-                            label="Referencia"
-                            :hide-details="!errors.referencia"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="3">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-select
-                            v-model="pais"
-                            label="País"
-                            :items="['Brasil', 'Angola', 'EUA']"
-                            :hide-details="!errors.pais"
-                            :error-messages="errors.pais"
-                          />
-                        </div>
-                        <div v-else>
-                          <v-select
-                            v-model="pais"
-                            label="País"
-                            :hide-details="!errors.pais"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-                      <v-col cols="2">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-select
-                            v-model="estado"
-                            label="Estado"
-                            :items="['PA', 'AP', 'TO']"
-                            :hide-details="!errors.estado"
-                            :error-messages="errors.estado"
-                          />
-                        </div>
-                        <div v-else>
-                          <v-select
-                            v-model="estado"
-                            label="Estado"
-                            :hide-details="!errors.estado"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-                      <v-col cols="3">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-select
-                            v-model="cidade"
-                            label="Cidade"
-                            :items="['Abaetetuba', 'Belém', 'Macapá']"
-                            :hide-details="!errors.cidade"
-                            :error-messages="errors.cidade"
-                          />
-                        </div>
-                        <div v-else>
-                          <v-select
-                            v-model="cidade"
-                            label="Cidade"
-                            :hide-details="!errors.cidade"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-                      <v-col cols="4">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="rede_social"
-                            label="Email/Instagram/Facebook"
-                            :hide-details="!errors.rede_social"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="rede_social"
-                            label="Email/Instagram/Facebook"
-                            :hide-details="!errors.rede_social"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="3">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-text-field
-                            v-model="telefone"
-                            label="Celular"
-                            v-mask="'(##)#####-####'"
-                            :hide-details="!errors.telefone"
-                            :error-messages="errors.telefone"/>
-                        </div>
-                        <div v-else>
-                          <v-text-field
-                            v-model="telefone"
-                            label="Celular"
-                            v-mask="'(##)#####-####'"
-                            :hide-details="!errors.telefone"
-                            readonly/>
-                        </div>
-                      </v-col>
-                      <v-col cols="2">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-select
-                            v-model="sexo"
-                            label="Sexo"
-                            :items="['Masculino', 'Feminino']"
-                            :hide-details="!errors.sexo"
-                          />
-                        </div>
-                        <div v-else>
-                          <v-select
-                            v-model="sexo"
-                            label="Sexo"
-                            :hide-details="!errors.sexo"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-                      <v-col cols="3">
-                        <div v-if="modo === 'adicao' || modo === 'edicao'">
-                          <v-select
-                            v-model="estado_civil"
-                            label="Estado Civil"
-                            :items="['Solteiro', 'Casado', 'Viúvo']"
-                            :hide-details="!errors.estado_civil"
-                          />
-                        </div>
-                        <div v-else>
-                          <v-select
-                            v-model="estado_civil"
-                            label="Estado Civil"
-                            :hide-details="!errors.estado_civil"
-                            readonly
-                          />
-                        </div>
-                      </v-col>
-                    </v-row>
-
-                    <v-row>
-                      <v-col class="text-right">
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn flat class="text-error" @click="isDialogOpen = false">Cancelar</v-btn>
-                          <v-btn type="submit"
-                                 class="bg-secondary"
-                                 flat
-                                 :loading="isSubmitting"
-                                 :disabled="isSubmitting" variant="tonal">Salvar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-col>
-
-                    </v-row>
-                  </form>
-
-                </v-card-text>
-            </v-card>
-          </v-dialog>
-        </v-card-item>
-
-        <div class="v-col-md-3 v-col-12">
-          <v-text-field
-            v-model="search"
-            prepend-inner-icon="mdi-magnify"
-            label="Procurar"
-            hide-details
-            density="compact"
-            variant="solo"
-          />
-        </div>
-
-        <v-data-table
-          v-model:items-per-page="itemsPerPage"
-          :headers="headers"
-          :items="clientes"
-          :search="search"
-          :loading="loading"
-          loading-text="Carregando dados..."
-          :sort-by="[{key: 'nome', order: 'asc'}]"
-          class="elevation-1 border-b"
-          @reset="handleReset"
-        >
-
-          <template v-slot:item.actions="{ item: cliente }">
-            <div class="align-center">
-              <v-btn flat rounded @click="visualizarCliente(cliente)">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-primary"
-                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                     fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/>
-                  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/>
-                </svg>
-              </v-btn>
-              <v-btn flat rounded @click="editarCliente(cliente)">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil text-secondary"
-                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                     fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path>
-                  <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"></line>
-                </svg>
-              </v-btn>
-              <v-btn flat rounded @click="abrirExcluir(cliente)">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash text-error"
-                     width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                     fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="4" y1="7" x2="20" y2="7"></line>
-                  <line x1="10" y1="11" x2="10" y2="17"></line>
-                  <line x1="14" y1="11" x2="14" y2="17"></line>
-                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
-                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
-                </svg>
-              </v-btn>
-            </div>
-          </template>
-
-        </v-data-table>
-
-        <v-dialog
-          v-model="isDialogExcluir"
-          width="400px"
-        >
-          <v-card style="height: 227px;">
-            <v-card-title class="pa-3 bg-primary">Excluir Cliente</v-card-title>
-
-            <v-card-text>
-              <v-row>
-                <v-col>
-                  Deseja realmente excluir este cliente <b>"{{ selectNome }}"</b>?
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="text-center">
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn flat class="bg-error" @click="isDialogExcluir = false">Não</v-btn>
-                    <v-btn @click.stop.prevent="excluirCliente(cliente)"
-                           class="bg-success"
-                           flat
-                           :loading="isSubmitting"
-                           :disabled="isSubmitting" variant="tonal">Sim
-                    </v-btn>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-
-      </v-card>
-
     </div>
-  </v-row>
 
+    <!-- Data Card -->
+    <v-card variant="flat" border rounded="xl">
+      <v-data-table
+        v-model:items-per-page="itemsPerPage"
+        :headers="headers"
+        :items="clientes"
+        :search="search"
+        :loading="loading"
+        hover
+        class="bg-transparent"
+      >
+        <!-- Search -->
+        <template v-slot:top>
+          <div class="pa-4 pb-2">
+            <v-text-field
+              v-model="search"
+              prepend-inner-icon="mdi-magnify"
+              placeholder="Pesquisar clientes..."
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              hide-details
+              clearable
+              color="primary"
+              style="max-width: 340px"
+            />
+          </div>
+        </template>
+
+        <!-- Name with avatar -->
+        <template v-slot:item.nome="{ value }">
+          <div class="d-flex align-center ga-3 py-1">
+            <v-avatar color="primary" rounded="md" size="34">
+              <span class="text-caption font-weight-bold text-white">
+                {{ value?.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase() }}
+              </span>
+            </v-avatar>
+            <span class="font-weight-medium">{{ value }}</span>
+          </div>
+        </template>
+
+        <!-- Actions -->
+        <template v-slot:item.actions="{ item }">
+          <div class="d-flex justify-end ga-1">
+            <v-tooltip text="Visualizar" location="top">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" icon="mdi-eye-outline" variant="text" color="info" density="comfortable" @click="abrirModal('visualizar', item)" />
+              </template>
+            </v-tooltip>
+            <v-tooltip text="Editar" location="top">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" icon="mdi-pencil-outline" variant="text" color="primary" density="comfortable" @click="abrirModal('edicao', item)" />
+              </template>
+            </v-tooltip>
+            <v-tooltip text="Excluir" location="top">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" icon="mdi-trash-can-outline" variant="text" color="error" density="comfortable" @click="abrirExcluir(item)" />
+              </template>
+            </v-tooltip>
+          </div>
+        </template>
+
+        <!-- Empty state -->
+        <template v-slot:no-data>
+          <div class="pa-12 text-center">
+            <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-account-off-outline</v-icon>
+            <p class="text-body-2 text-medium-emphasis">Nenhum cliente encontrado.</p>
+            <v-btn color="primary" variant="tonal" class="mt-3" prepend-icon="mdi-plus" @click="abrirModal('adicao')">
+              Adicionar primeiro cliente
+            </v-btn>
+          </div>
+        </template>
+      </v-data-table>
+    </v-card>
+
+    <!-- ── Add/Edit/View Dialog ── -->
+    <EntityDialog
+      v-model="isDialogOpen"
+      :mode="modo"
+      width="960px"
+      :title="modo === 'adicao' ? 'Novo Cliente' : modo === 'edicao' ? 'Editar Cliente' : 'Detalhes do Cliente'"
+    >
+      <v-alert
+        v-if="errorMessage"
+        type="error"
+        variant="tonal"
+        rounded="lg"
+        class="mb-4"
+        closable
+        @click:close="errorMessage = null"
+      >
+        {{ errorMessage }}
+      </v-alert>
+
+      <form @submit.prevent="submit">
+        <!-- Section: Dados Pessoais -->
+        <p class="section-label">Dados Pessoais</p>
+        <v-row dense class="mb-3">
+          <v-col cols="12" md="4">
+            <BaseField v-model="nome" label="Nome Completo" :errors="errors.nome" :readonly="modo === 'visualizar'" />
+          </v-col>
+          <v-col cols="12" md="4">
+            <BaseField v-model="cpf" label="CPF" :errors="errors.cpf" :readonly="modo === 'visualizar'" />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="rg"
+              label="RG"
+              :error-messages="errors.rg"
+              :readonly="modo === 'visualizar'"
+              v-mask="'#######'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="sexo"
+              label="Sexo"
+              :items="['Masculino', 'Feminino']"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="estado_civil"
+              label="Estado Civil"
+              :items="['Solteiro', 'Casado', 'Viúvo']"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="telefone"
+              label="Celular"
+              v-mask="'(##)#####-####'"
+              :error-messages="errors.telefone"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+        </v-row>
+
+        <!-- Section: Endereço -->
+        <p class="section-label">Endereço</p>
+        <v-row dense class="mb-3">
+          <v-col cols="12" md="6">
+            <BaseField v-model="endereco" label="Endereço" :errors="errors.endereco" :readonly="modo === 'visualizar'" />
+          </v-col>
+          <v-col cols="6" md="2">
+            <BaseField v-model="numero_casa" label="Nº" :errors="errors.numero_casa" :readonly="modo === 'visualizar'" />
+          </v-col>
+          <v-col cols="6" md="4">
+            <BaseField v-model="bairro" label="Bairro" :errors="errors.bairro" :readonly="modo === 'visualizar'" />
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-text-field
+              v-model="cep"
+              label="CEP"
+              v-mask="'#####-###'"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="cidade"
+              label="Cidade"
+              :items="['Abaetetuba', 'Belém', 'Macapá']"
+              :error-messages="errors.cidade"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-select
+              v-model="estado"
+              label="Estado"
+              :items="['PA', 'AP', 'TO']"
+              :error-messages="errors.estado"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="pais"
+              label="País"
+              :items="['Brasil', 'Angola', 'EUA']"
+              :error-messages="errors.pais"
+              :readonly="modo === 'visualizar'"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              color="primary"
+              hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12" md="5">
+            <BaseField v-model="referencia" label="Referência" :readonly="modo === 'visualizar'" />
+          </v-col>
+        </v-row>
+
+        <!-- Section: Contato Digital -->
+        <p class="section-label">Contato Digital</p>
+        <v-row dense>
+          <v-col cols="12" md="6">
+            <BaseField v-model="rede_social" label="Rede Social (Instagram / Facebook / E-mail)" :readonly="modo === 'visualizar'" />
+          </v-col>
+        </v-row>
+
+        <!-- Actions -->
+        <div class="d-flex justify-end ga-2 mt-6">
+          <v-btn variant="text" color="grey-darken-1" rounded="lg" @click="isDialogOpen = false">
+            {{ modo === 'visualizar' ? 'Fechar' : 'Cancelar' }}
+          </v-btn>
+          <v-btn
+            v-if="modo !== 'visualizar'"
+            type="submit"
+            color="primary"
+            variant="flat"
+            rounded="lg"
+            :loading="loading"
+            prepend-icon="mdi-content-save-outline"
+          >
+            Salvar
+          </v-btn>
+        </div>
+      </form>
+    </EntityDialog>
+
+    <!-- ── Delete Dialog ── -->
+    <v-dialog v-model="isDialogExcluir" max-width="420">
+      <v-card rounded="xl">
+        <div class="pa-5 d-flex align-center ga-3">
+          <v-avatar color="error" rounded="lg" size="44">
+            <v-icon icon="mdi-trash-can-outline" size="22" color="white" />
+          </v-avatar>
+          <div>
+            <p class="text-subtitle-1 font-weight-bold mb-0">Excluir Cliente</p>
+            <p class="text-body-2 text-medium-emphasis mb-0">Esta ação não pode ser desfeita</p>
+          </div>
+        </div>
+        <v-divider />
+        <v-card-text class="pa-5">
+          Deseja realmente excluir o cliente <strong>{{ selectNome }}</strong>?
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-4">
+          <v-spacer />
+          <v-btn variant="text" rounded="lg" @click="isDialogExcluir = false">Cancelar</v-btn>
+          <v-btn color="error" variant="flat" rounded="lg" :loading="loading" @click="confirmarExclusao">
+            Confirmar exclusão
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script setup>
+import { onMounted, ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useClienteStore } from '@/store/clienteStore';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
+import messages from '@/utils/messages';
+import EntityDialog from '@/components/common/EntityDialog.vue';
+import BaseField from '@/components/common/BaseField.vue';
 
-import {onMounted, ref} from 'vue';
-import * as yup from "yup";
-import {useField, useForm} from "vee-validate";
-import messages from "@/utils/messages";
-import {useAuth} from "@/store/auth";
-import router from "@/router";
+const clienteStore = useClienteStore();
+const { clientes, loading } = storeToRefs(clienteStore);
 
 const isDialogExcluir = ref(false);
-const isDialogOpen = ref(false);
-const errorMessage = ref(null);
-const authStore = useAuth();
-const modo = ref('adicao');
-const loading = ref(true);
+const isDialogOpen    = ref(false);
+const errorMessage    = ref(null);
+const modo            = ref('adicao');
+const search          = ref('');
+const selectedId      = ref('');
+const selectNome      = ref('');
+const itemsPerPage    = ref(10);
 
 const schema = yup.object({
-  nome: yup.string().required('Nome é um campo obrigatório.'),
-  cpf: yup.string().required('CPF é um campo obrigatório.'),
-  rg: yup.string().required('RG é um campo obrigatório.'),
-  endereco: yup.string().required('Endereço é um campo obrigatório.'),
-  numero_casa: yup.string().required('N° é um campo obrigatório.'),
-  bairro: yup.string().required('Bairro é um campo obrigatório.'),
-  pais: yup.string().required('País é um campo obrigatório.'),
-  estado: yup.string().required('Estado é um campo obrigatório.'),
-  cidade: yup.string().required('Cidade é um campo obrigatório.'),
-  telefone: yup.string().required('Celular é um campo obrigatório.'),
+  nome:        yup.string().required('Nome é obrigatório.'),
+  cpf:         yup.string().required('CPF é obrigatório.'),
+  rg:          yup.string().required('RG é obrigatório.'),
+  endereco:    yup.string().required('Endereço é obrigatório.'),
+  numero_casa: yup.string().required('Número é obrigatório.'),
+  bairro:      yup.string().required('Bairro é obrigatório.'),
+  pais:        yup.string().required('País é obrigatório.'),
+  estado:      yup.string().required('Estado é obrigatório.'),
+  cidade:      yup.string().required('Cidade é obrigatória.'),
+  telefone:    yup.string().required('Celular é obrigatório.'),
 });
 
-const {handleSubmit, errors, isSubmitting, handleReset} = useForm({
-  validationSchema: schema
+const { handleSubmit, errors, handleReset, setValues } = useForm({
+  validationSchema: schema,
+  initialValues: { pais: 'Brasil', estado: 'PA', sexo: 'Masculino', estado_civil: 'Solteiro' },
 });
 
-const selectedId = ref('');
-const selectNome = ref('');
+const { value: nome }         = useField('nome');
+const { value: cpf }          = useField('cpf');
+const { value: rg }           = useField('rg');
+const { value: endereco }     = useField('endereco');
+const { value: numero_casa }  = useField('numero_casa');
+const { value: bairro }       = useField('bairro');
+const { value: cep }          = useField('cep');
+const { value: referencia }   = useField('referencia');
+const { value: pais }         = useField('pais');
+const { value: estado }       = useField('estado');
+const { value: cidade }       = useField('cidade');
+const { value: rede_social }  = useField('rede_social');
+const { value: telefone }     = useField('telefone');
+const { value: sexo }         = useField('sexo');
+const { value: estado_civil } = useField('estado_civil');
 
-const {value: nome} = useField('nome');
-const {value: cpf} = useField('cpf');
-const {value: rg} = useField('rg');
-const {value: endereco} = useField('endereco');
-const {value: numero_casa} = useField('numero_casa');
-const {value: bairro} = useField('bairro');
-const {value: cep} = useField('cep');
-const {value: referencia} = useField('referencia');
-const {value: pais} = useField('pais');
-const {value: estado} = useField('estado');
-const {value: cidade} = useField('cidade');
-const {value: rede_social} = useField('rede_social');
-const {value: telefone} = useField('telefone');
-const {value: sexo} = useField('sexo');
-const {value: estado_civil} = useField('estado_civil');
+const headers = [
+  { title: 'Nome',     align: 'start',  key: 'nome',     sortable: true  },
+  { title: 'Telefone', align: 'center', key: 'telefone', sortable: false },
+  { title: 'Cidade',   align: 'center', key: 'cidade',   sortable: true  },
+  { title: 'Ações',    align: 'end',    key: 'actions',  sortable: false },
+];
 
-function abrirExcluir(user) {
-  isDialogExcluir.value = true
-  selectNome.value = user.nome
-  selectedId.value = user.id
-}
+onMounted(() => clienteStore.fetchClientes().catch(console.error));
 
-function excluirCliente() {
-  authStore.excluirCliente(selectedId.value).then(() => {
-    isDialogExcluir.value = false
-    router.go();
-  });
-}
-
-const submit = handleSubmit((value) => {
-  errorMessage.value = null
-  if ((selectedId.value == null || selectedId.value == '') && modo.value === 'adicao') {
-    return authStore.cadastrarCliente(value)
-      .then(() => {
-        isDialogOpen.value = false
-        router.go();
-      }).catch((e) => {
-        errorMessage.value = messages[e.response.data.error]
-      });
+const abrirModal = (m = 'adicao', client = null) => {
+  modo.value = m;
+  errorMessage.value = null;
+  handleReset();
+  if (client) {
+    selectedId.value = client.id;
+    selectNome.value = client.nome;
+    setValues({ ...client });
   } else {
-    return authStore.editarCliente(selectedId.value, value).then(() => {
-      isDialogOpen.value = false
-      router.go();
-    }).catch((e) => {
-      errorMessage.value = messages[e.response.data.error]
-    })
+    selectedId.value = '';
   }
-})
-
-const headers = ref([
-  {title: "Nome", align: 'start', key: "nome"},
-  {title: "Telefone", align: 'center', key: "telefone"},
-  {title: "Ações", align: 'center', value: "actions"},
-]);
-
-const search = ref('');
-
-
-function editarCliente(user) {
-  selectedId.value = user.id;
   isDialogOpen.value = true;
-  modo.value = 'edicao';
-  errorMessage.value = null
+};
 
-  if (modo.value === 'edicao') {
-    nome.value = user.nome,
-      cpf.value = user.cpf,
-      rg.value = user.rg,
-      endereco.value = user.endereco,
-      numero_casa.value = user.numero_casa,
-      bairro.value = user.bairro,
-      cep.value = user.cep,
-      referencia.value = user.referencia,
-      pais.value = user.pais,
-      estado.value = user.estado,
-      cidade.value = user.cidade,
-      rede_social.value = user.rede_social,
-      telefone.value = user.telefone,
-      sexo.value = user.sexo,
-      estado_civil.value = user.estado_civil
-  }
+const abrirExcluir = (client) => {
+  selectedId.value   = client.id;
+  selectNome.value   = client.nome;
+  isDialogExcluir.value = true;
+};
 
-}
-
-function visualizarCliente(user) {
-  selectedId.value = user.id;
-  isDialogOpen.value = true;
-  modo.value = 'visualizar';
-  errorMessage.value = null
-
-  if (modo.value === 'visualizar') {
-    nome.value = user.nome,
-      cpf.value = user.cpf,
-      rg.value = user.rg,
-      endereco.value = user.endereco,
-      numero_casa.value = user.numero_casa,
-      bairro.value = user.bairro,
-      cep.value = user.cep,
-      referencia.value = user.referencia,
-      pais.value = user.pais,
-      estado.value = user.estado,
-      cidade.value = user.cidade,
-      rede_social.value = user.rede_social,
-      telefone.value = user.telefone,
-      sexo.value = user.sexo,
-      estado_civil.value = user.estado_civil
-  }
-}
-
-const clientes = ref([]);
-
-onMounted(async () => {
+const confirmarExclusao = async () => {
   try {
-    const response = await authStore.listaClientes();
-    clientes.value = response.data.data;
-    loading.value = false;
-  } catch (error) {
-    console.error('Erro ao buscar a lista de clientes:', error);
+    await clienteStore.excluirCliente(selectedId.value);
+    isDialogExcluir.value = false;
+  } catch {
+    errorMessage.value = 'Falha ao excluir cliente.';
   }
-})
+};
 
-function abrirModal() {
-  isDialogOpen.value = true
-  selectedId.value = '';
-  modo.value = 'adicao'
-  handleReset()
-}
-
-const itemsPerPage = ref(10);
-
+const submit = handleSubmit(async (values) => {
+  errorMessage.value = null;
+  try {
+    if (modo.value === 'adicao') await clienteStore.cadastrarCliente(values);
+    else                         await clienteStore.editarCliente(selectedId.value, values);
+    isDialogOpen.value = false;
+  } catch (e) {
+    errorMessage.value = messages[e.response?.data?.error] || 'Ocorreu um erro inesperado.';
+  }
+});
 </script>
 
-
-
-
-
-
+<style scoped>
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--v-theme-primary));
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+</style>

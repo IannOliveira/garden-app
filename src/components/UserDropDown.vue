@@ -1,87 +1,66 @@
-
 <template>
-  <v-menu :close-on-content-click="false" >
-    <template v-slot:activator="{ props }" >
-
-      <div >
-        <v-row>
-            <v-switch
-              inset
-              color="info"
-              v-model="darkMode"
-              @change="toggleTheme()"
-              class="custom-switch mt-4"
-              :label="`${darkMode ? 'Escuro' : 'Claro'}!`"
-            />
-
-          <v-col class="mt-3">
-            <v-btn class="profileBtn custom-hover-primary" variant="text" v-bind="props" icon>
-              <v-avatar size="35">
-                <img src="@/assets/images/users/avatar-1.jpg" height="35" alt="user"/>
-              </v-avatar>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </div>
-
+  <v-menu :close-on-content-click="false" location="bottom end">
+    <template v-slot:activator="{ props }">
+      <v-btn variant="text" v-bind="props" icon class="mr-2">
+        <v-avatar size="36" color="primary" rounded="lg">
+          <span class="text-subtitle-2 font-weight-bold text-white">{{ initials }}</span>
+        </v-avatar>
+      </v-btn>
     </template>
 
-    <v-sheet rounded="md" width="200" elevation="10" class="mt-2" >
-      <v-list class="py-0" lines="one" density="compact">
-        <v-list-item value="item1" active-color="primary">
-          <template v-slot:prepend>
-            <v-icon icon="mdi-account-outline"/>
-            <v-list-item-title class="pl-4 text-body-1">My Profile</v-list-item-title>
-          </template>
-
-        </v-list-item>
-        <v-list-item value="item2" active-color="primary">
-          <template v-slot:prepend>
-          </template>
-          <v-list-item-title class="pl-4 text-body-1">My Account</v-list-item-title>
-        </v-list-item>
-        <v-list-item value="item3" active-color="primary">
-          <template v-slot:prepend>
-            <!--<ListCheckIcon stroke-width="1.5"  size="20"/>-->
-          </template>
-          <v-list-item-title class="pl-4 text-body-1">My Task</v-list-item-title>
-        </v-list-item>
-      </v-list>
-      <div class="pt-4 pb-4 px-5 text-center">
-        <v-btn color="primary" variant="outlined" block @click="logout">Logout</v-btn>
+    <v-card min-width="240" rounded="xl" elevation="10" class="mt-1">
+      <!-- User Info -->
+      <div class="pa-4 d-flex align-center ga-3">
+        <v-avatar color="primary" size="46" rounded="lg">
+          <span class="text-h6 font-weight-bold text-white">{{ initials }}</span>
+        </v-avatar>
+        <div class="overflow-hidden">
+          <p class="text-body-2 font-weight-bold mb-0 text-truncate">{{ fullName }}</p>
+          <p class="text-caption text-medium-emphasis mb-0 text-truncate">{{ user?.email }}</p>
+        </div>
       </div>
-    </v-sheet>
+
+      <v-divider />
+
+      <div class="pa-3">
+        <v-btn
+          color="error"
+          variant="tonal"
+          block
+          rounded="lg"
+          prepend-icon="mdi-logout"
+          @click="logout"
+        >
+          Sair da conta
+        </v-btn>
+      </div>
+    </v-card>
   </v-menu>
 </template>
 
-
 <script setup>
-import {useAuth} from "@/store/auth";
-import {useRouter} from "vue-router";
+import { computed } from 'vue';
+import { useAuth } from '@/store/auth';
+import { useMe } from '@/store/me';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuth();
+const meStore = useMe();
 const router = useRouter();
-import {useTheme} from "vuetify";
-import {ref} from "vue";
 
-const theme = useTheme();
-const darkMode = ref(false);
+const user = computed(() => meStore.user);
 
-const toggleTheme = () => {
-  theme.global.name.value = darkMode.value ? "dark" : "light";
-};
+const fullName = computed(() => {
+  const u = user.value;
+  if (!u) return 'Usuário';
+  return [u.primeiro_nome, u.sobrenome].filter(Boolean).join(' ');
+});
+
+const initials = computed(() =>
+  fullName.value.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
+);
 
 function logout() {
-  authStore.logout().then(() => {
-    router.push({name: 'login'})
-  })
+  authStore.logout().then(() => router.push({ name: 'login' }));
 }
 </script>
-
-<style>
-
-.custom-switch {
-  transform: scale(0.6);
-}
-
-</style>

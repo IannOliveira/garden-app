@@ -3,13 +3,13 @@
     <!-- Page Header -->
     <div class="d-flex align-center justify-space-between mb-5">
       <div>
-        <h1 class="text-h5 font-weight-bold">Fornecedores</h1>
+        <h1 class="text-h5 font-weight-bold">Produtos</h1>
         <p class="text-body-2 text-medium-emphasis mt-1">
-          {{ fornecedores.length }} fornecedor{{ fornecedores.length !== 1 ? 'es' : '' }} cadastrado{{ fornecedores.length !== 1 ? 's' : '' }}
+          {{ produtos.length }} produto{{ produtos.length !== 1 ? 's' : '' }} no catálogo
         </p>
       </div>
-      <v-btn color="warning" variant="flat" prepend-icon="mdi-truck-plus-outline" rounded="lg" @click="abrirModal('adicao')">
-        Novo Fornecedor
+      <v-btn color="success" variant="flat" prepend-icon="mdi-plus" rounded="lg" @click="abrirModal('adicao')">
+        Novo Produto
       </v-btn>
     </div>
 
@@ -18,7 +18,7 @@
       <v-data-table
         v-model:items-per-page="itemsPerPage"
         :headers="headers"
-        :items="fornecedores"
+        :items="produtos"
         :search="search"
         :loading="loadingStore"
         hover
@@ -30,7 +30,7 @@
             <v-text-field
               v-model="search"
               prepend-inner-icon="mdi-magnify"
-              placeholder="Pesquisar fornecedores..."
+              placeholder="Pesquisar produtos..."
               variant="outlined"
               density="compact"
               rounded="lg"
@@ -42,16 +42,14 @@
           </div>
         </template>
 
-        <!-- Name with avatar -->
-        <template v-slot:item.nome="{ value }">
-          <div class="d-flex align-center ga-3 py-1">
-            <v-avatar color="warning" rounded="md" size="34">
-              <span class="text-caption font-weight-bold text-white">
-                {{ value?.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase() }}
-              </span>
-            </v-avatar>
-            <span class="font-weight-medium">{{ value }}</span>
-          </div>
+        <!-- Category chip -->
+        <template v-slot:item.categoria="{ value }">
+          <v-chip size="small" variant="tonal" color="success" class="font-weight-medium">{{ value }}</v-chip>
+        </template>
+
+        <!-- Preço -->
+        <template v-slot:item.preco="{ value }">
+          <span class="font-weight-medium">R$ {{ parseFloat(value).toFixed(2) }}</span>
         </template>
 
         <!-- Actions -->
@@ -78,10 +76,10 @@
         <!-- Empty -->
         <template v-slot:no-data>
           <div class="pa-12 text-center">
-            <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-truck-delivery-outline</v-icon>
-            <p class="text-body-2 text-medium-emphasis">Nenhum fornecedor encontrado.</p>
-            <v-btn color="warning" variant="tonal" class="mt-3" prepend-icon="mdi-plus" @click="abrirModal('adicao')">
-              Adicionar primeiro fornecedor
+            <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-package-variant-closed</v-icon>
+            <p class="text-body-2 text-medium-emphasis">Nenhum produto encontrado.</p>
+            <v-btn color="success" variant="tonal" class="mt-3" prepend-icon="mdi-plus" @click="abrirModal('adicao')">
+              Adicionar primeiro produto
             </v-btn>
           </div>
         </template>
@@ -92,8 +90,8 @@
     <EntityDialog
       v-model="isDialogOpen"
       :mode="modo"
-      width="960px"
-      :title="modo === 'adicao' ? 'Novo Fornecedor' : modo === 'edicao' ? 'Editar Fornecedor' : 'Detalhes do Fornecedor'"
+      width="900px"
+      :title="modo === 'adicao' ? 'Novo Produto' : modo === 'edicao' ? 'Editar Produto' : 'Detalhes do Produto'"
     >
       <v-alert v-if="errorMessage" type="error" variant="tonal" rounded="lg" class="mb-4" closable @click:close="errorMessage = null">
         {{ errorMessage }}
@@ -101,67 +99,83 @@
 
       <form @submit.prevent="submit">
         <!-- Identificação -->
-        <p class="section-label">Dados da Empresa</p>
+        <p class="section-label">Identificação</p>
         <v-row dense class="mb-3">
-          <v-col cols="12" md="4">
-            <BaseField v-model="nome" label="Nome / Fantasia" :errors="errors.nome" :readonly="modo === 'visualizar'" />
+          <v-col cols="12" md="8">
+            <BaseField v-model="nome_produto" label="Nome do Produto" :errors="errors.nome_produto" :readonly="modo === 'visualizar'" />
           </v-col>
           <v-col cols="12" md="4">
-            <BaseField v-model="razao_social" label="Razão Social" :errors="errors.razao_social" :readonly="modo === 'visualizar'" />
+            <v-select
+              v-model="categoria"
+              label="Categoria"
+              :items="['Profissional', 'Men', 'Manutencao', 'Acessorios']"
+              :error-messages="errors.categoria"
+              :readonly="modo === 'visualizar'"
+              variant="outlined" density="compact" rounded="lg" color="primary" hide-details="auto"
+            />
+          </v-col>
+          <v-col cols="12">
+            <BaseField v-model="descricao" label="Descrição" :errors="errors.descricao" :readonly="modo === 'visualizar'" />
           </v-col>
           <v-col cols="12" md="4">
-            <BaseField v-model="cpf_cnpj" label="CPF / CNPJ" :errors="errors.cpf_cnpj" :readonly="modo === 'visualizar'" />
-          </v-col>
-          <v-col cols="12" md="4">
-            <BaseField v-model="inscricao_estadual" label="Inscrição Estadual" :errors="errors.inscricao_estadual" :readonly="modo === 'visualizar'" />
+            <v-select
+              v-model="fabricante"
+              label="Fabricante"
+              :items="['GARDEN']"
+              :error-messages="errors.fabricante"
+              :readonly="modo === 'visualizar'"
+              variant="outlined" density="compact" rounded="lg" color="primary" hide-details="auto"
+            />
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
-              v-model="telefone"
-              label="Celular"
-              v-mask="'(##)#####-####'"
-              :error-messages="errors.telefone"
+              v-model="quantidade"
+              type="number"
+              label="Quantidade em Estoque"
+              :append-inner-icon="modo !== 'visualizar' ? 'mdi-minus-box' : undefined"
+              :prepend-inner-icon="modo !== 'visualizar' ? 'mdi-plus-box' : undefined"
+              @click:append-inner="decrement"
+              @click:prepend-inner="increment"
               :readonly="modo === 'visualizar'"
               variant="outlined" density="compact" rounded="lg" color="primary" hide-details="auto"
             />
           </v-col>
         </v-row>
 
-        <!-- Endereço -->
-        <p class="section-label">Endereço</p>
+        <!-- Preços -->
+        <p class="section-label">Precificação</p>
         <v-row dense class="mb-3">
-          <v-col cols="12" md="6">
-            <BaseField v-model="endereco" label="Endereço" :errors="errors.endereco" :readonly="modo === 'visualizar'" />
-          </v-col>
-          <v-col cols="6" md="2">
-            <BaseField v-model="numero" label="Nº" :errors="errors.numero" :readonly="modo === 'visualizar'" />
-          </v-col>
-          <v-col cols="6" md="4">
-            <BaseField v-model="bairro" label="Bairro" :errors="errors.bairro" :readonly="modo === 'visualizar'" />
-          </v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="4">
             <v-text-field
-              v-model="cep" label="CEP" v-mask="'#####-###'"
+              v-model="preco"
+              label="Preço de Custo"
+              v-money="moneyOptions"
+              prefix="R$"
+              :error-messages="errors.preco"
               :readonly="modo === 'visualizar'"
               variant="outlined" density="compact" rounded="lg" color="primary" hide-details="auto"
             />
           </v-col>
           <v-col cols="12" md="4">
-            <v-select
-              v-model="cidade" label="Cidade"
-              :items="['Belém', 'Abaetetuba', 'Ananindeua']"
-              :error-messages="errors.cidade"
+            <v-text-field
+              v-model="preco_venda"
+              label="Preço de Venda"
+              v-money="moneyOptions"
+              prefix="R$"
+              :error-messages="errors.preco_venda"
               :readonly="modo === 'visualizar'"
               variant="outlined" density="compact" rounded="lg" color="primary" hide-details="auto"
             />
           </v-col>
-          <v-col cols="12" md="2">
-            <v-select
-              v-model="estado" label="Estado"
-              :items="['PA', 'AP', 'TO']"
-              :error-messages="errors.estado"
-              :readonly="modo === 'visualizar'"
-              variant="outlined" density="compact" rounded="lg" color="primary" hide-details="auto"
+          <v-col cols="12" md="4">
+            <v-text-field
+              :model-value="porcentagemDisplay + '%'"
+              label="Margem de Lucro"
+              readonly
+              variant="outlined" density="compact" rounded="lg"
+              :bg-color="parseFloat(porcentagemDisplay) >= 0 ? 'lightsuccess' : 'lighterror'"
+              :color="parseFloat(porcentagemDisplay) >= 0 ? 'success' : 'error'"
+              hide-details
             />
           </v-col>
         </v-row>
@@ -171,7 +185,7 @@
           <v-btn variant="text" color="grey-darken-1" rounded="lg" @click="isDialogOpen = false">
             {{ modo === 'visualizar' ? 'Fechar' : 'Cancelar' }}
           </v-btn>
-          <v-btn v-if="modo !== 'visualizar'" type="submit" color="warning" variant="flat" rounded="lg"
+          <v-btn v-if="modo !== 'visualizar'" type="submit" color="success" variant="flat" rounded="lg"
             :loading="loadingStore" prepend-icon="mdi-content-save-outline">
             Salvar
           </v-btn>
@@ -187,13 +201,13 @@
             <v-icon icon="mdi-trash-can-outline" size="22" color="white" />
           </v-avatar>
           <div>
-            <p class="text-subtitle-1 font-weight-bold mb-0">Excluir Fornecedor</p>
+            <p class="text-subtitle-1 font-weight-bold mb-0">Excluir Produto</p>
             <p class="text-body-2 text-medium-emphasis mb-0">Esta ação não pode ser desfeita</p>
           </div>
         </div>
         <v-divider />
         <v-card-text class="pa-5">
-          Deseja realmente excluir o fornecedor <strong>{{ selectNome }}</strong>?
+          Deseja realmente excluir <strong>{{ selectNome }}</strong>?
         </v-card-text>
         <v-divider />
         <v-card-actions class="pa-4">
@@ -209,17 +223,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useFornecedorStore } from '@/store/fornecedorStore';
+import { useProdutoStore } from '@/store/produtoStore';
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import messages from '@/utils/messages';
 import BaseField from '@/components/common/BaseField.vue';
 import EntityDialog from '@/components/common/EntityDialog.vue';
 
-const fornecedorStore = useFornecedorStore();
-const { fornecedores, loading: loadingStore } = storeToRefs(fornecedorStore);
+const produtoStore = useProdutoStore();
+const { produtos, loading: loadingStore } = storeToRefs(produtoStore);
 
 const isDialogOpen    = ref(false);
 const isDialogExcluir = ref(false);
@@ -231,35 +245,44 @@ const search          = ref('');
 const itemsPerPage    = ref(10);
 
 const schema = yup.object({
-  nome:     yup.string().required('Nome é obrigatório.'),
-  endereco: yup.string().required('Endereço é obrigatório.'),
-  estado:   yup.string().required('Estado é obrigatório.'),
-  cidade:   yup.string().required('Cidade é obrigatória.'),
-  bairro:   yup.string().required('Bairro é obrigatório.'),
+  nome_produto: yup.string().required('Nome é obrigatório.'),
+  descricao:    yup.string().required('Descrição é obrigatória.'),
+  categoria:    yup.string().required('Categoria é obrigatória.'),
+  fabricante:   yup.string().required('Fabricante é obrigatório.'),
+  preco:        yup.string().required('Preço de custo é obrigatório.'),
+  preco_venda:  yup.string().required('Preço de venda é obrigatório.'),
 });
 
 const { handleSubmit, errors, handleReset, setValues } = useForm({ validationSchema: schema });
 
-const { value: nome }               = useField('nome');
-const { value: cpf_cnpj }           = useField('cpf_cnpj');
-const { value: inscricao_estadual } = useField('inscricao_estadual');
-const { value: razao_social }       = useField('razao_social');
-const { value: endereco }           = useField('endereco');
-const { value: numero }             = useField('numero');
-const { value: cep }                = useField('cep');
-const { value: bairro }             = useField('bairro');
-const { value: telefone }           = useField('telefone');
-const { value: cidade }             = useField('cidade');
-const { value: estado }             = useField('estado');
+const { value: nome_produto } = useField('nome_produto');
+const { value: descricao }    = useField('descricao');
+const { value: categoria }    = useField('categoria');
+const { value: fabricante }   = useField('fabricante');
+const { value: quantidade }   = useField('quantidade');
+const { value: preco }        = useField('preco');
+const { value: preco_venda }  = useField('preco_venda');
 
 const headers = [
-  { title: 'Nome',     align: 'start',  key: 'nome',     sortable: true  },
-  { title: 'Telefone', align: 'center', key: 'telefone', sortable: false },
-  { title: 'Cidade',   align: 'center', key: 'cidade',   sortable: true  },
-  { title: 'Ações',    align: 'end',    key: 'actions',  sortable: false },
+  { title: 'Produto',   align: 'start',  key: 'nome_produto', sortable: true  },
+  { title: 'Categoria', align: 'center', key: 'categoria',    sortable: true  },
+  { title: 'Preço',     align: 'center', key: 'preco',        sortable: true  },
+  { title: 'Ações',     align: 'end',    key: 'actions',      sortable: false },
 ];
 
-onMounted(() => fornecedorStore.fetchFornecedores());
+const moneyOptions = { suffix: '', precision: 2, decimal: '.', thousands: '', allowBlank: false, masked: true };
+
+const porcentagemDisplay = computed(() => {
+  const custo = parseFloat(preco.value) || 0;
+  const venda = parseFloat(preco_venda.value) || 0;
+  if (custo > 0) return (((venda - custo) / custo) * 100).toFixed(2);
+  return '0.00';
+});
+
+onMounted(() => produtoStore.fetchProdutos());
+
+const increment = () => { quantidade.value = (parseInt(quantidade.value) || 0) + 1; };
+const decrement = () => { if (quantidade.value > 0) quantidade.value = (parseInt(quantidade.value) || 0) - 1; };
 
 const abrirModal = (tipo, item = null) => {
   modo.value = tipo;
@@ -267,33 +290,33 @@ const abrirModal = (tipo, item = null) => {
   handleReset();
   if (item) {
     selectedId.value = item.id;
-    setValues({ nome: item.nome, cpf_cnpj: item.cpf_cnpj, inscricao_estadual: item.inscricao_estadual,
-      razao_social: item.razao_social, endereco: item.endereco, numero: item.numero,
-      cep: item.cep, bairro: item.bairro, telefone: item.telefone, cidade: item.cidade, estado: item.estado });
+    setValues({ nome_produto: item.nome_produto, descricao: item.descricao, categoria: item.categoria,
+      fabricante: item.fabricante, quantidade: item.quantidade, preco: item.preco, preco_venda: item.preco_venda });
   } else {
     selectedId.value = null;
+    quantidade.value = 0;
   }
   isDialogOpen.value = true;
 };
 
 const abrirExcluir = (item) => {
   selectedId.value = item.id;
-  selectNome.value = item.nome;
+  selectNome.value = item.nome_produto;
   isDialogExcluir.value = true;
 };
 
 const confirmarExclusao = async () => {
   try {
-    await fornecedorStore.removeFornecedor(selectedId.value);
+    await produtoStore.removeProduto(selectedId.value);
     isDialogExcluir.value = false;
     selectedId.value = null;
-  } catch { errorMessage.value = 'Erro ao excluir fornecedor.'; }
+  } catch { errorMessage.value = 'Erro ao excluir produto.'; }
 };
 
 const submit = handleSubmit(async (values) => {
   try {
-    if (modo.value === 'adicao') await fornecedorStore.addFornecedor(values);
-    else                         await fornecedorStore.updateFornecedor(selectedId.value, values);
+    if (modo.value === 'adicao') await produtoStore.addProduto(values);
+    else                         await produtoStore.updateProduto(selectedId.value, values);
     isDialogOpen.value = false;
   } catch (e) {
     errorMessage.value = messages[e.response?.data?.error] || 'Ocorreu um erro inesperado.';
@@ -307,7 +330,7 @@ const submit = handleSubmit(async (values) => {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgb(var(--v-theme-warning));
+  color: rgb(var(--v-theme-success));
   margin-bottom: 10px;
   margin-top: 4px;
 }

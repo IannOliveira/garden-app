@@ -1,70 +1,87 @@
 <template>
-  <v-alert
-    v-if="errorMessage"
-    type="error"
-    :text="errorMessage"
-    :icon="false"
-    class="mb-5"
-  >
-  </v-alert>
+  <div>
+    <v-alert
+      v-if="errorMessage"
+      type="error"
+      variant="tonal"
+      rounded="lg"
+      class="mb-5"
+      closable
+      @click:close="errorMessage = null"
+    >
+      {{ errorMessage }}
+    </v-alert>
 
-  <form @submit="submit">
-    <v-row class="d-flex mb-3">
-      <v-col cols="12">
-        <v-label class="font-weight-bold mb-1">E-mail</v-label>
+    <form @submit.prevent="submit">
+      <!-- Email -->
+      <div class="mb-5">
+        <p class="form-label">E-mail cadastrado</p>
         <v-text-field
           v-model="email"
-          variant="outlined"
+          placeholder="seu@email.com"
           type="email"
-          color="primary"
-          :hide-details="!errors.email"
+          variant="outlined"
+          density="comfortable"
+          rounded="lg"
+          prepend-inner-icon="mdi-email-outline"
           :error-messages="errors.email"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" >
-        <v-btn
-          type="submit"
+          hide-details="auto"
           color="primary"
-          size="large"
-          block
-          flat
-          :loading="isSubmitting"
-          :disabled="isSubmitting"
-        >Solicitar Token</v-btn>
-      </v-col>
-    </v-row>
-  </form>
+          bg-color="grey-lighten-5"
+        />
+      </div>
+
+      <v-btn
+        type="submit"
+        color="primary"
+        size="large"
+        block
+        rounded="lg"
+        :loading="isSubmitting"
+        :disabled="isSubmitting"
+        height="52"
+      >
+        <v-icon start icon="mdi-send-outline" />
+        Enviar token de recuperação
+      </v-btn>
+    </form>
+  </div>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {useAuth} from "@/store/auth";
-import * as yup from "yup";
-import {useField, useForm} from "vee-validate";
-import messages from "@/utils/messages";
+import { ref } from 'vue';
+import { useAuth } from '@/store/auth';
+import * as yup from 'yup';
+import { useField, useForm } from 'vee-validate';
+import messages from '@/utils/messages';
 
-const emits = defineEmits(['after-request']);
+const emits        = defineEmits(['after-request']);
 const errorMessage = ref(null);
-const authStore = useAuth();
+const authStore    = useAuth();
 
 const schema = yup.object({
-  email: yup.string().required('E-mail é um campo obrigatório.').email('Insira um e-mail válido.')
+  email: yup.string().required('E-mail é obrigatório.').email('Insira um e-mail válido.'),
 });
 
-const { handleSubmit, errors, isSubmitting } = useForm({
-  validationSchema: schema
-});
+const { handleSubmit, errors, isSubmitting } = useForm({ validationSchema: schema });
 
 const submit = handleSubmit((value) => {
-  errorMessage.value = null
+  errorMessage.value = null;
   return authStore.esqueciSenha(value.email)
-    .then(() =>{
-      emits('after-request');
-    }).catch((e) => {
-      errorMessage.value = messages[e.response.data.error]
+    .then(() => emits('after-request'))
+    .catch((e) => {
+      errorMessage.value = messages[e.response?.data?.error] || 'Erro ao enviar token.';
     });
-})
+});
 
 const { value: email } = useField('email');
-
 </script>
+
+<style scoped>
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2A3547;
+  margin-bottom: 8px;
+}
+</style>

@@ -9,47 +9,30 @@ const routes = [
     component: () => import('@/layouts/Login.vue'),
     beforeEnter: redirectIfAuthenticated,
     children: [
-      {
-        path: '',
-        name: 'login',
-        component: () => import('@/views/Login.vue')
-      }
+      { path: '', name: 'login', component: () => import('@/views/Login.vue')}
     ],
   },
   {
     path: '/cadastrar',
     component: () => import('@/layouts/Login.vue'),
     children: [
-      {
-        path: '',
-        name: 'cadastrar',
-        component: () => import('@/views/Registro.vue'),
-      },
+      { path: '', name: 'cadastrar', component: () => import('@/views/Registro.vue')},
     ],
   },
   {
     path: '/verificar-email',
     component: () => import('@/layouts/Login.vue'),
     children: [
-      {
-        path: '',
-        name: 'verificarEmail',
-        component: () => import('@/views/VerificarEmail.vue'),
-      },
+      { path: '', name: 'verificarEmail', component: () => import('@/views/VerificarEmail.vue')},
     ],
   },
   {
     path: '/esqueci-senha',
     component: () => import('@/layouts/Login.vue'),
     children: [
-      {
-        path: '',
-        name: 'esqueciSenha',
-        component: () => import('@/views/EsqueciSenha.vue'),
-      },
+      { path: '', name: 'esqueciSenha', component: () => import('@/views/EsqueciSenha.vue')},
     ],
   },
-
   {
     path: '/cliente',
     component: () => import('@/layouts/Dashboard.vue'),
@@ -81,7 +64,25 @@ const routes = [
       { path: '/fornecedor', name: 'cadastrarFornecedor', component: () => import('@/views/Fornecedor.vue') },
       { path: '/fornecedor', name: 'listaFornecedor', component: () => import('@/views/Fornecedor.vue') },
       { path: '/fornecedor', name: 'editarFornecedor', component: () => import('@/views/Fornecedor.vue') },
-      { path: '/fornecedor', name: 'excluirCliente', component: () => import('@/views/Fornecedor.vue') },
+      { path: '/fornecedor', name: 'excluirFornecedor', component: () => import('@/views/Fornecedor.vue') },
+    ],
+  },
+  {
+    path: '/produtos',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/produtos', name: 'listaProdutos', component: () => import('@/views/Produto.vue') },
+      { path: '/produtos', name: 'cadastrarProduto', component: () => import('@/views/Produto.vue') },
+      { path: '/produtos', name: 'editarProduto', component: () => import('@/views/Produto.vue') }
+    ],
+  },
+  {
+    path: '/faturamento',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/faturamento', name: 'faturamento', component: () => import('@/views/Faturamento.vue') },
     ],
   },
   {
@@ -89,9 +90,7 @@ const routes = [
     component: () => import('@/layouts/Dashboard.vue'),
     beforeEnter: auth,
     children: [
-      { path: '/', name: 'listaProdutos', component: () => import('@/views/Dashboard.vue') },
-      { path: '/', name: 'cadastrarProduto', component: () => import('@/views/Dashboard.vue') },
-      { path: '/', name: 'editarProduto', component: () => import('@/views/Dashboard.vue') }
+      { path: '/', name: 'dashboard', component: () => import('@/views/Dashboard.vue') },
     ],
   },
 
@@ -103,8 +102,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) =>{
-  const authStore = useAuth()
-  authStore.sanctum();
   next()
 })
 export default router

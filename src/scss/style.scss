@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 @import './variables';
-//@import 'vuetify/styles/main.sass';
 @import './override';
 @import './layout/container';
 @import './layout/sidebar';
@@ -12,4 +13,3 @@
 @import './components/VTextField';
 @import './pages/dashboards';
 @import './pages/auth';
-//@import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
