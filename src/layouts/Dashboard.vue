@@ -50,6 +50,7 @@
               v-bind="tooltipProps"
               :to="{ name: item.name }"
               :ripple="false"
+              exact
               rounded="lg"
               class="mb-1 nav-item"
               :title="rail ? '' : item.title"
@@ -112,8 +113,11 @@ const navItems = [
   { icon: 'mdi-account-group-outline',     title: 'Clientes',     name: 'listaClientes',   color: 'info'    },
   { icon: 'mdi-package-variant-closed',    title: 'Produtos',     name: 'listaProdutos',   color: 'success' },
   { icon: 'mdi-truck-delivery-outline',    title: 'Fornecedores', name: 'listaFornecedor', color: 'warning' },
-  { icon: 'mdi-cash-register',             title: 'Contas',       name: 'listaContas',     color: 'error'   },
   { icon: 'mdi-receipt-text-check-outline', title: 'Faturamento',  name: 'faturamento',     color: 'secondary' },
+  { icon: 'mdi-history',                   title: 'Histórico',    name: 'faturamentoHistorico', color: 'primary' },
+  { icon: 'mdi-cash-remove',               title: 'Contas a Pagar',   name: 'listaContas',     color: 'error'   },
+  { icon: 'mdi-cash-clock',                title: 'Contas a Receber', name: 'contasReceber',   color: 'warning' },
+  { icon: 'mdi-cash-register',             title: 'Caixa',        name: 'caixa',           color: 'success' },
 ];
 </script>
 

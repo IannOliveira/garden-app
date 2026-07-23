@@ -83,6 +83,29 @@ const routes = [
     beforeEnter: auth,
     children: [
       { path: '/faturamento', name: 'faturamento', component: () => import('@/views/Faturamento.vue') },
+      { path: '/faturamento/historico', name: 'faturamentoHistorico', component: () => import('@/views/FaturamentoHistorico.vue') },
+    ],
+  },
+  {
+    path: '/contas-receber',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/contas-receber', name: 'contasReceber', component: () => import('@/views/ContasReceber.vue') },
+    ],
+  },
+  {
+    path: '/relatorio-contas-receber',
+    name: 'relatorioContasReceber',
+    component: () => import('@/views/RelatorioContasReceber.vue'),
+    beforeEnter: auth,
+  },
+  {
+    path: '/caixa',
+    component: () => import('@/layouts/Dashboard.vue'),
+    beforeEnter: auth,
+    children: [
+      { path: '/caixa', name: 'caixa', component: () => import('@/views/Caixa.vue') },
     ],
   },
   {

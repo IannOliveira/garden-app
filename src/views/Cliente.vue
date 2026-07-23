@@ -51,7 +51,7 @@
         <!-- Name with avatar -->
         <template v-slot:item.nome="{ value }">
           <div class="d-flex align-center ga-3 py-1">
-            <v-avatar color="primary" rounded="md" size="34">
+            <v-avatar color="primary" rounded="md" size="34" class="mr-3">
               <span class="text-caption font-weight-bold text-white">
                 {{ value?.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase() }}
               </span>

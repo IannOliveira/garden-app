@@ -29,7 +29,7 @@
         <!-- Step 1: Cliente -->
         <v-card variant="flat" border rounded="xl" class="mb-4">
           <div class="pa-4 d-flex align-center ga-3">
-            <v-avatar color="primary" rounded="md" size="38">
+            <v-avatar color="primary" rounded="md" size="38" class="mr-3">
               <v-icon icon="mdi-account-outline" size="20" color="white" />
             </v-avatar>
             <div>
@@ -71,17 +71,6 @@
                 </v-autocomplete>
               </v-col>
               <v-col cols="12" md="4">
-                <v-select
-                  v-model="tipoPagamento"
-                  label="Forma de Pagamento"
-                  :items="['DINHEIRO', 'PIX', 'CARTÃO DE CRÉDITO', 'CARTÃO DE DÉBITO']"
-                  prepend-inner-icon="mdi-credit-card-outline"
-                  variant="outlined"
-                  density="compact"
-                  rounded="lg"
-                  color="primary"
-                  hide-details
-                />
               </v-col>
             </v-row>
 
@@ -115,7 +104,7 @@
         <v-card variant="flat" border rounded="xl">
           <div class="pa-4 d-flex align-center justify-space-between">
             <div class="d-flex align-center ga-3">
-              <v-avatar color="success" rounded="md" size="38">
+              <v-avatar color="success" rounded="md" size="38" class="mr-3">
                 <v-icon icon="mdi-package-variant-closed" size="20" color="white" />
               </v-avatar>
               <div>
@@ -282,7 +271,7 @@
 
             <!-- Panel Header -->
             <div class="pa-4 d-flex align-center ga-3">
-              <v-avatar color="primary" rounded="md" size="38">
+              <v-avatar color="primary" rounded="md" size="38" class="mr-3">
                 <v-icon icon="mdi-receipt-text-outline" size="20" color="white" />
               </v-avatar>
               <div class="flex-grow-1">
@@ -352,7 +341,7 @@
                         color="success"
                         density="compact"
                         size="x-small"
-                        @click="item.qty++"
+                        @click="incrementarItem(idx)"
                       />
                       <v-btn
                         icon="mdi-close"
@@ -425,7 +414,7 @@
                   variant="flat"
                   rounded="lg"
                   size="large"
-                  :disabled="!clienteSelecionado || !itens.length || !tipoPagamento"
+                  :disabled="!clienteSelecionado || !itens.length"
                   prepend-icon="mdi-check-circle-outline"
                   class="font-weight-bold"
                   @click="confirmarPedido"
@@ -435,11 +424,11 @@
 
                 <!-- Validation hint -->
                 <p
-                  v-if="!clienteSelecionado || !tipoPagamento"
+                  v-if="!clienteSelecionado || !itens.length"
                   class="text-caption text-medium-emphasis text-center mt-2"
                 >
                   <v-icon size="12" class="mr-1">mdi-information-outline</v-icon>
-                  {{ !clienteSelecionado ? 'Selecione um cliente' : 'Selecione a forma de pagamento' }}
+                  Selecione um cliente e os produtos
                 </p>
               </div>
             </div>
@@ -469,51 +458,13 @@
     </v-row>
 
     <!-- ── Confirm Dialog ─────────────────────────────────────────── -->
-    <v-dialog v-model="dialogConfirmar" max-width="480">
-      <v-card rounded="xl">
-        <div class="pa-5 d-flex align-center ga-3">
-          <v-avatar color="success" rounded="lg" size="48">
-            <v-icon icon="mdi-check-circle-outline" size="24" color="white" />
-          </v-avatar>
-          <div>
-            <p class="text-subtitle-1 font-weight-bold mb-0">Confirmar Pedido</p>
-            <p class="text-body-2 text-medium-emphasis mb-0">Revise os dados antes de finalizar</p>
-          </div>
-        </div>
-        <v-divider />
-        <v-card-text class="pa-5">
-          <v-list lines="one" class="pa-0">
-            <v-list-item class="px-0">
-              <template v-slot:prepend><v-icon icon="mdi-account-outline" size="18" color="primary" class="mr-3" /></template>
-              <template v-slot:title><span class="text-body-2">{{ clienteSelecionado?.nome }}</span></template>
-            </v-list-item>
-            <v-list-item class="px-0">
-              <template v-slot:prepend><v-icon icon="mdi-credit-card-outline" size="18" color="primary" class="mr-3" /></template>
-              <template v-slot:title><span class="text-body-2">{{ tipoPagamento }}</span></template>
-            </v-list-item>
-            <v-list-item class="px-0">
-              <template v-slot:prepend><v-icon icon="mdi-cart-outline" size="18" color="success" class="mr-3" /></template>
-              <template v-slot:title>
-                <span class="text-body-2">{{ totalUnidades }} {{ totalUnidades === 1 ? 'unidade' : 'unidades' }} · {{ itens.length }} {{ itens.length === 1 ? 'produto' : 'produtos' }}</span>
-              </template>
-            </v-list-item>
-          </v-list>
-          <v-divider class="my-3" />
-          <div class="d-flex justify-space-between align-center">
-            <span class="text-subtitle-2 font-weight-bold">Total a pagar</span>
-            <span class="text-h6 font-weight-bold text-success">R$ {{ total }}</span>
-          </div>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions class="pa-4">
-          <v-spacer />
-          <v-btn variant="text" rounded="lg" @click="dialogConfirmar = false">Cancelar</v-btn>
-          <v-btn color="success" variant="flat" rounded="lg" prepend-icon="mdi-check" @click="finalizarPedido">
-            Finalizar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- ── Confirm Dialog / Payment Dialog ────────────────────────────────── -->
+    <PaymentDialog 
+      v-model="dialogConfirmar" 
+      :total="total" 
+      :loading="faturamentoStore.loading"
+      @confirm="finalizarPedido"
+    />
 
     <!-- ── Success Snackbar ── -->
     <v-snackbar
@@ -536,16 +487,18 @@ import { ref, computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useClienteStore }  from '@/store/clienteStore';
 import { useProdutoStore }  from '@/store/produtoStore';
+import { useFaturamentoStore } from '@/store/faturamentoStore';
+import PaymentDialog from '@/components/Faturamento/PaymentDialog.vue';
 
 const clienteStore = useClienteStore();
 const produtoStore = useProdutoStore();
+const faturamentoStore = useFaturamentoStore();
 
 const { clientes }  = storeToRefs(clienteStore);
 const { produtos }  = storeToRefs(produtoStore);
 
 // ── State ──────────────────────────────────────────────────────────────────
 const clienteSelecionado = ref(null);
-const tipoPagamento      = ref(null);
 const itens              = ref([]);           // [{ ...produto, qty: N }]
 const searchProduto      = ref('');
 const categoriaAtiva     = ref(null);
@@ -595,9 +548,22 @@ const adicionarItem = (produto) => {
 
   const existing = itens.value.find(i => i.id === produto.id);
   if (existing) {
-    existing.qty++;
+    if (existing.qty < produto.quantidade) {
+      existing.qty++;
+    } else {
+      alert('Estoque máximo atingido para ' + produto.nome_produto);
+    }
   } else {
     itens.value.push({ ...produto, qty: 1 });
+  }
+};
+
+const incrementarItem = (idx) => {
+  const item = itens.value[idx];
+  if (item.qty < item.quantidade) {
+    item.qty++;
+  } else {
+    alert('Estoque máximo atingido para ' + item.nome_produto);
   }
 };
 
@@ -623,24 +589,32 @@ const confirmarPedido = () => {
   dialogConfirmar.value = true;
 };
 
-const finalizarPedido = () => {
-  // TODO: integrar com faturamentoStore quando o backend estiver pronto
-  console.log('Pedido finalizado:', {
+const finalizarPedido = async (paymentData) => {
+  const payload = {
     cliente_id:    clienteSelecionado.value?.id,
-    tipo_pagamento: tipoPagamento.value,
-    itens:          itens.value.map(i => ({ produto_id: i.id, qty: i.qty, preco: i.preco_venda })),
+    tipo_pagamento: paymentData.tipoPagamento,
+    itens:          itens.value.map(i => ({ produto_id: i.id, qty: i.qty, preco: parseFloat(i.preco_venda || 0) })),
     desconto:       parseFloat(desconto.value) || 0,
     total:          parseFloat(total.value),
     observacao:     observacao.value,
-  });
+    parcelas:       paymentData.parcelas
+  };
 
-  dialogConfirmar.value = false;
-  snackbar.value = true;
+  try {
+    await faturamentoStore.createFaturamento(payload);
+    dialogConfirmar.value = false;
+    snackbar.value = true;
 
-  // Reset
-  clienteSelecionado.value = null;
-  tipoPagamento.value      = null;
-  limparPedido();
+    // Reset
+    clienteSelecionado.value = null;
+    limparPedido();
+
+    // Refresh products to update stock visually
+    produtoStore.fetchProdutos();
+  } catch (error) {
+    console.error('Erro ao finalizar pedido:', error);
+    alert('Erro ao finalizar pedido: ' + (error.response?.data?.error || 'Verifique o console.'));
+  }
 };
 
 // ── Lifecycle ────────────────────────────────────────────────────────────────

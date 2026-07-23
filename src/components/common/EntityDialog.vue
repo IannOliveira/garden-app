@@ -4,9 +4,9 @@
 
       <!-- Header -->
       <div class="dialog-header" :class="headerColorClass">
-        <div class="d-flex align-center ga-3">
-          <v-avatar :color="headerIconColor" rounded="md" size="36">
-            <v-icon :icon="headerIcon" size="20" color="white" />
+        <div class="d-flex align-center">
+          <v-avatar :color="headerIconColor" size="40" class="mr-3">
+            <v-icon :icon="headerIcon" size="22" color="white" />
           </v-avatar>
           <div>
             <p class="text-subtitle-1 font-weight-bold mb-0">{{ computedTitle }}</p>

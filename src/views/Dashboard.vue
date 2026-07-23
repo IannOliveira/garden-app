@@ -113,7 +113,7 @@
               class="d-flex align-center justify-space-between mb-4"
             >
               <div class="d-flex align-center ga-3">
-                <v-avatar :color="item.color" size="38" rounded="md">
+                <v-avatar :color="item.color" size="38" rounded="md" class="mr-3">
                   <v-icon :icon="item.icon" size="18" color="white" />
                 </v-avatar>
                 <div>
